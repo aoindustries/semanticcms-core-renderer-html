@@ -53,7 +53,7 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 				scmUrl="@{documented.scm.url}"
 			>
 				<ul>
-					<li>New module.</li>
+					<li>New module separating model from rendering HTML.</li>
 				</ul>
 			</changelog:release>
 		</c:if>
