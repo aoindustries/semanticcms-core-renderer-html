@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-renderer-html - SemanticCMS pages rendered as HTML in a Servlet environment.
- * Copyright (C) 2014, 2015, 2016, 2017  AO Industries, Inc.
+ * Copyright (C) 2014, 2015, 2016, 2017, 2018  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -22,6 +22,14 @@
  */
 package com.semanticcms.core.renderer.html;
 
+import com.aoindustries.lang.NotImplementedException;
+import com.semanticcms.core.model.Page;
+import com.semanticcms.core.pages.CaptureLevel;
+import com.semanticcms.core.renderer.Renderer;
+import com.semanticcms.core.renderer.servlet.DefaultServletPageRenderer;
+import com.semanticcms.core.renderer.servlet.ServletPageRenderer;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
@@ -34,11 +42,14 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * TODO: Consider custom EL resolver for this variable: http://stackoverflow.com/questions/5016965/how-to-add-a-custom-variableresolver-in-pure-jsp
  */
-public class HtmlRenderer {
+public class HtmlRenderer implements Renderer {
 
 	// <editor-fold defaultstate="collapsed" desc="Singleton Instance (per application)">
 	static final String ATTRIBUTE_NAME = "htmlRenderer";
@@ -463,6 +474,54 @@ public class HtmlRenderer {
 				}
 			}
 		);
+	}
+	// </editor-fold>
+
+	// <editor-fold defaultstate="collapsed" desc="Renderer">
+
+	@Override
+	public CaptureLevel getCaptureLevel() {
+		// TODO: Capture based on a per-view setting
+		return CaptureLevel.PAGE;
+	}
+
+	@Override
+	public ServletPageRenderer newPageRenderer(Page page, Map<String,? extends Object> attributes) {
+		return new DefaultServletPageRenderer(page, attributes) {
+
+			@Override
+			public long getLastModified() throws IOException {
+				// TODO: Per-view last modified
+				throw new NotImplementedException();
+			}
+
+			@Override
+			public String getContentType() throws IOException {
+				// TODO: Per-view content type
+				throw new NotImplementedException();
+			}
+
+			@Override
+			public long getLength() throws IOException {
+				// TODO: Per-view length
+				throw new NotImplementedException();
+			}
+
+			@Override
+			public void doRenderer(
+				Page page,
+				HttpServletRequest request,
+				HttpServletResponse response,
+				Writer out
+			) throws IOException, ServletException {
+				throw new NotImplementedException();
+			}
+
+			@Override
+			public void close() {
+				// Nothing to do
+			}
+		};
 	}
 	// </editor-fold>
 }

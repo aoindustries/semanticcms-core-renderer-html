@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-renderer-html - SemanticCMS pages rendered as HTML in a Servlet environment.
- * Copyright (C) 2014, 2015, 2016, 2017  AO Industries, Inc.
+ * Copyright (C) 2014, 2015, 2016, 2017, 2018  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -22,18 +22,23 @@
  */
 package com.semanticcms.core.renderer.html;
 
+import com.semanticcms.core.controller.SemanticCMS;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-@WebListener("Exposes the HtmlRenderer as an application-scope variable \"" + HtmlRenderer.ATTRIBUTE_NAME + "\".")
+@WebListener("Registers the HtmlRenderer with SemanticCMS and exposes the HtmlRenderer as an application-scope variable \"" + HtmlRenderer.ATTRIBUTE_NAME + "\".")
 public class HtmlRendererContextListener implements ServletContextListener {
 
 	private HtmlRenderer htmlRenderer;
 
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
-		htmlRenderer = HtmlRenderer.getInstance(event.getServletContext());
+		ServletContext servletContext = event.getServletContext();
+		htmlRenderer = HtmlRenderer.getInstance(servletContext);
+		SemanticCMS.getInstance(servletContext).addRenderer("", htmlRenderer);
+		// TODO: Register an export version at *.html, which redirects to not .html when not in export mode
 	}
 
 	@Override
