@@ -22,7 +22,9 @@
  */
 package com.semanticcms.core.renderer.html;
 
-import com.aoindustries.lang.NotImplementedException;
+import com.aoindustries.encoding.MediaType;
+import com.semanticcms.core.controller.SemanticCMS;
+import com.semanticcms.core.model.Link;
 import com.semanticcms.core.model.Page;
 import com.semanticcms.core.pages.CaptureLevel;
 import com.semanticcms.core.renderer.Renderer;
@@ -45,6 +47,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.SkipPageException;
 
 /**
  * TODO: Consider custom EL resolver for this variable: http://stackoverflow.com/questions/5016965/how-to-add-a-custom-variableresolver-in-pure-jsp
@@ -88,6 +91,13 @@ public class HtmlRenderer implements Renderer {
 	// </editor-fold>
 
 	// <editor-fold defaultstate="collapsed" desc="Views">
+	/**
+	 * The parameter name used for views.
+	 *
+	 * TODO: Move to new Link type of Element in core-model?
+	 */
+	public static final String VIEW_PARAM = "view";
+
 	private static class ViewsLock {}
 	private final ViewsLock viewsLock = new ViewsLock();
 
@@ -120,7 +130,7 @@ public class HtmlRenderer implements Renderer {
 	/**
 	 * Gets the views, ordered by view group then display.
 	 *
-	 * @see  View#compareTo(com.semanticcms.core.servlet.View)
+	 * @see  View#compareTo(com.semanticcms.core.renderer.html.View)
 	 */
 	public SortedSet<View> getViews() {
 		return Collections.unmodifiableSortedSet(views);
@@ -492,19 +502,19 @@ public class HtmlRenderer implements Renderer {
 			@Override
 			public long getLastModified() throws IOException {
 				// TODO: Per-view last modified
-				throw new NotImplementedException();
+				return 0;
 			}
 
 			@Override
 			public String getContentType() throws IOException {
 				// TODO: Per-view content type
-				throw new NotImplementedException();
+				return MediaType.XHTML.getContentType();
 			}
 
 			@Override
 			public long getLength() throws IOException {
 				// TODO: Per-view length
-				throw new NotImplementedException();
+				return -1;
 			}
 
 			@Override
@@ -513,8 +523,52 @@ public class HtmlRenderer implements Renderer {
 				HttpServletRequest request,
 				HttpServletResponse response,
 				Writer out
-			) throws IOException, ServletException {
-				throw new NotImplementedException();
+			) throws IOException, ServletException, SkipPageException {
+				// Resolve the view
+				SemanticCMS semanticCMS = SemanticCMS.getInstance(servletContext);
+				HtmlRenderer htmlRenderer = HtmlRenderer.getInstance(servletContext);
+				View view;
+				{
+					String viewName = request.getParameter(VIEW_PARAM);
+					Map<String,View> viewsByName = htmlRenderer.getViewsByName();
+					if(viewName == null) {
+						view = null;
+					} else {
+						if(Link.DEFAULT_VIEW_NAME.equals(viewName)) throw new ServletException(VIEW_PARAM + " paramater may not be sent for default view: " + viewName);
+						view = viewsByName.get(viewName);
+					}
+					if(view == null) {
+						// Find default
+						view = viewsByName.get(Link.DEFAULT_VIEW_NAME);
+						if(view == null) throw new ServletException("Default view not found: " + Link.DEFAULT_VIEW_NAME);
+					}
+				}
+
+				// Find the theme
+				Theme theme = null;
+				{
+					// Currently just picks the first non-default theme registered, the uses default
+					Theme defaultTheme = null;
+					for(Theme t : htmlRenderer.getThemes().values()) {
+						if(t.isDefault()) {
+							assert defaultTheme == null : "More than one default theme registered";
+							defaultTheme = t;
+						} else {
+							// Use first non-default
+							theme = t;
+							break;
+						}
+					}
+					if(theme == null) {
+						// Use default
+						if(defaultTheme == null) throw new ServletException("No themes registered");
+						theme = defaultTheme;
+					}
+					assert theme != null;
+				}
+
+				// Forward to theme
+				theme.doTheme(servletContext, request, response, view, page);
 			}
 
 			@Override
