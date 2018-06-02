@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-renderer-html - SemanticCMS pages rendered as HTML in a Servlet environment.
- * Copyright (C) 2013, 2014, 2015, 2016, 2017  AO Industries, Inc.
+ * Copyright (C) 2013, 2014, 2015, 2016, 2017, 2018  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -185,7 +185,7 @@ final public class NavigationTreeRenderer {
 		return StringUtility.convertToHex(data.getBytes(Charsets.UTF_8));
 	}
 
-	public static void writeNavigationTreeImpl(
+	public static void writeNavigationTree(
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
@@ -239,7 +239,7 @@ final public class NavigationTreeRenderer {
 	 * @param linksToBook    ValueExpression that returns String
 	 * @param linksToPage    ValueExpression that returns String
 	 */
-	public static void writeNavigationTreeImpl(
+	public static void writeNavigationTree(
 		ServletContext servletContext,
 		ELContext elContext,
 		HttpServletRequest request,
