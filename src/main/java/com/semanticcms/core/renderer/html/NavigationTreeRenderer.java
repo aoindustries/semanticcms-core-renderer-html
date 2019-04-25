@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-renderer-html - SemanticCMS pages rendered as HTML in a Servlet environment.
- * Copyright (C) 2013, 2014, 2015, 2016, 2017, 2018  AO Industries, Inc.
+ * Copyright (C) 2013, 2014, 2015, 2016, 2017, 2018, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -29,7 +29,6 @@ import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.net.DomainName;
 import com.aoindustries.net.Path;
-import com.aoindustries.nio.charset.Charsets;
 import static com.aoindustries.taglib.AttributeUtils.resolveValue;
 import com.aoindustries.util.StringUtility;
 import static com.aoindustries.util.StringUtility.nullIfEmpty;
@@ -49,6 +48,7 @@ import com.semanticcms.core.pages.local.CurrentCaptureLevel;
 import com.semanticcms.core.pages.local.CurrentNode;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -68,7 +68,7 @@ final public class NavigationTreeRenderer {
 	public static <T extends Node> List<T> filterNodes(Collection<T> children, Set<T> nodesToInclude) {
 		int size = children.size();
 		if(size == 0) return Collections.emptyList();
-		List<T> filtered = new ArrayList<T>(size);
+		List<T> filtered = new ArrayList<>(size);
 		for(T child : children) {
 			if(nodesToInclude.contains(child)) {
 				filtered.add(child);
@@ -80,7 +80,7 @@ final public class NavigationTreeRenderer {
 	public static <T extends PageReferrer> List<T> filterPages(Collection<T> children, Set<PageRef> pagesToInclude) {
 		int size = children.size();
 		if(size == 0) return Collections.emptyList();
-		List<T> filtered = new ArrayList<T>(size);
+		List<T> filtered = new ArrayList<>(size);
 		for(T child : children) {
 			if(pagesToInclude.contains(child.getPageRef())) {
 				filtered.add(child);
@@ -100,7 +100,7 @@ final public class NavigationTreeRenderer {
 		// Both elements and pages are child nodes
 		List<Element> childElements = includeElements ? node.getChildElements() : null;
 		Set<ChildRef> childRefs = (node instanceof Page) ? ((Page)node).getChildRefs() : null;
-		List<Node> childNodes = new ArrayList<Node>(
+		List<Node> childNodes = new ArrayList<>(
 			(childElements==null ? 0 : childElements.size())
 			+ (childRefs==null ? 0 : childRefs.size())
 		);
@@ -182,7 +182,7 @@ final public class NavigationTreeRenderer {
 
 	public static String encodeHexData(String data) {
 		// Note: This is always UTF-8 encoded and does not depend on response encoding
-		return StringUtility.convertToHex(data.getBytes(Charsets.UTF_8));
+		return StringUtility.convertToHex(data.getBytes(StandardCharsets.UTF_8));
 	}
 
 	public static void writeNavigationTree(
@@ -344,8 +344,8 @@ final public class NavigationTreeRenderer {
 		} else {
 			// Find all nodes in the navigation tree that link to the linksToPage
 			PageRef linksTo = PageRefResolver.getPageRef(servletContext, request, linksToDomain, linksToBook, linksToPage);
-			nodesWithLinks = new HashSet<Node>();
-			nodesWithChildLinks = new HashSet<Node>();
+			nodesWithLinks = new HashSet<>();
+			nodesWithChildLinks = new HashSet<>();
 			findLinks(
 				servletContext,
 				request,

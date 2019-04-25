@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-renderer-html - SemanticCMS pages rendered as HTML in a Servlet environment.
- * Copyright (C) 2013, 2014, 2015, 2016, 2017  AO Industries, Inc.
+ * Copyright (C) 2013, 2014, 2015, 2016, 2017, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -61,7 +61,7 @@ final public class HtmlRendererUtils {
 			PageUtils.filterNotMissingBook(servletContext, page.getParentRefs()),
 			CaptureLevel.META // TODO: View provide capture level required for isApplicable check, might be PAGE or (null for none) for some views.
 		).values();
-		Set<Page> applicableParents = new LinkedHashSet<Page>(parents.size() *4/3+1);
+		Set<Page> applicableParents = new LinkedHashSet<>(parents.size() *4/3+1);
 		for(Page parent : parents) {
 			if(view.isApplicable(servletContext, request, response, parent)) {
 				applicableParents.add(parent);

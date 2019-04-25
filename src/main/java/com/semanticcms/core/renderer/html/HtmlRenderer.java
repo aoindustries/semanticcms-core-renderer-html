@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-renderer-html - SemanticCMS pages rendered as HTML in a Servlet environment.
- * Copyright (C) 2014, 2015, 2016, 2017, 2018  AO Industries, Inc.
+ * Copyright (C) 2014, 2015, 2016, 2017, 2018, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -104,7 +104,7 @@ public class HtmlRenderer implements Renderer {
 	/**
 	 * The views by name in order added.
 	 */
-	private final Map<String,View> viewsByName = new LinkedHashMap<String,View>();
+	private final Map<String,View> viewsByName = new LinkedHashMap<>();
 
 	private static final Set<View.Group> viewGroups = Collections.unmodifiableSet(EnumSet.allOf(View.Group.class));
 
@@ -125,7 +125,7 @@ public class HtmlRenderer implements Renderer {
 	/**
 	 * The views in order.
 	 */
-	private final SortedSet<View> views = new TreeSet<View>();
+	private final SortedSet<View> views = new TreeSet<>();
 
 	/**
 	 * Gets the views, ordered by view group then display.
@@ -155,7 +155,7 @@ public class HtmlRenderer implements Renderer {
 	/**
 	 * The components that are currently registered.
 	 */
-	private final List<Component> components = new CopyOnWriteArrayList<Component>();
+	private final List<Component> components = new CopyOnWriteArrayList<>();
 
 	/**
 	 * Gets all components in an undefined, but consistent (within a single run) ordering.
@@ -194,7 +194,7 @@ public class HtmlRenderer implements Renderer {
 	/**
 	 * The themes in order added.
 	 */
-	private final Map<String,Theme> themes = new LinkedHashMap<String,Theme>();
+	private final Map<String,Theme> themes = new LinkedHashMap<>();
 
 	/**
 	 * Gets the themes, in the order added.
@@ -224,7 +224,7 @@ public class HtmlRenderer implements Renderer {
 	/**
 	 * The CSS links in the order added.
 	 */
-	private final Set<String> cssLinks = new LinkedHashSet<String>();
+	private final Set<String> cssLinks = new LinkedHashSet<>();
 
 	/**
 	 * Gets the CSS links, in the order added.
@@ -252,7 +252,7 @@ public class HtmlRenderer implements Renderer {
 	/**
 	 * The scripts in the order added.
 	 */
-	private final Map<String,String> scripts = new LinkedHashMap<String,String>();
+	private final Map<String,String> scripts = new LinkedHashMap<>();
 
 	/**
 	 * Gets the scripts, in the order added.
@@ -301,7 +301,7 @@ public class HtmlRenderer implements Renderer {
 	/**
 	 * The head includes in the order added.
 	 */
-	private final Set<String> headIncludes = new LinkedHashSet<String>();
+	private final Set<String> headIncludes = new LinkedHashSet<>();
 
 	/**
 	 * Gets the head includes, in the order added.
@@ -343,7 +343,7 @@ public class HtmlRenderer implements Renderer {
 	/**
 	 * The CSS classes used in links.
 	 */
-	private final Map<Class<? extends com.semanticcms.core.model.Element>,LinkCssClassResolver<?>> linkCssClassResolverByElementType = new LinkedHashMap<Class<? extends com.semanticcms.core.model.Element>,LinkCssClassResolver<?>>();
+	private final Map<Class<? extends com.semanticcms.core.model.Element>,LinkCssClassResolver<?>> linkCssClassResolverByElementType = new LinkedHashMap<>();
 
 	/**
 	 * Gets the CSS class to use in links to the given element.
@@ -424,7 +424,7 @@ public class HtmlRenderer implements Renderer {
 	/**
 	 * The CSS classes used in list items.
 	 */
-	private final Map<Class<? extends com.semanticcms.core.model.Node>,ListItemCssClassResolver<?>> listItemCssClassResolverByNodeType = new LinkedHashMap<Class<? extends com.semanticcms.core.model.Node>,ListItemCssClassResolver<?>>();
+	private final Map<Class<? extends com.semanticcms.core.model.Node>,ListItemCssClassResolver<?>> listItemCssClassResolverByNodeType = new LinkedHashMap<>();
 
 	/**
 	 * Gets the CSS class to use in list items to the given node.

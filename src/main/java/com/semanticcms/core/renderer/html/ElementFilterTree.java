@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-renderer-html - SemanticCMS pages rendered as HTML in a Servlet environment.
- * Copyright (C) 2016, 2017  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -254,7 +254,7 @@ final public class ElementFilterTree {
 		if(captureLevel.compareTo(CaptureLevel.META) >= 0) {
 			final Node currentNode = CurrentNode.getCurrentNode(request);
 			// Filter by has files
-			final Set<Node> nodesWithMatches = new HashSet<Node>();
+			final Set<Node> nodesWithMatches = new HashSet<>();
 			findElements(
 				servletContext,
 				request,
