@@ -248,6 +248,34 @@ public class HtmlRenderer implements Renderer {
 	}
 	// </editor-fold>
 
+	// <editor-fold defaultstate="collapsed" desc="Print CSS Links">
+	/**
+	 * The print CSS links in the order added.
+	 */
+	private final Set<String> printCssLinks = new LinkedHashSet<>();
+
+	/**
+	 * Gets the print CSS links, in the order added.
+	 */
+	public Set<String> getPrintCssLinks() {
+		synchronized(printCssLinks) {
+			// Not returning a copy since CSS links are normally only registered on app start-up.
+			return Collections.unmodifiableSet(printCssLinks);
+		}
+	}
+
+	/**
+	 * Registers a new print CSS link.
+	 *
+	 * @throws  IllegalStateException  if the link is already registered.
+	 */
+	public void addPrintCssLink(String printCssLink) throws IllegalStateException {
+		synchronized(printCssLinks) {
+			if(!printCssLinks.add(printCssLink)) throw new IllegalStateException("Print CSS link already registered: " + printCssLink);
+		}
+	}
+	// </editor-fold>
+
 	// <editor-fold defaultstate="collapsed" desc="Scripts">
 	/**
 	 * The scripts in the order added.

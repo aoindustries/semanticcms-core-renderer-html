@@ -37,6 +37,7 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2017-08-25T16:59:45-0500"
+		dateModified="2019-06-12T03:09:29-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.semanticcms:semanticcms-core-renderer-html:pom.version}" />
@@ -54,6 +55,7 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 			>
 				<ul>
 					<li>New module separating model from rendering HTML.</li>
+					<li>Now supporting media="print" stylesheets.</li>
 				</ul>
 			</changelog:release>
 		</c:if>
