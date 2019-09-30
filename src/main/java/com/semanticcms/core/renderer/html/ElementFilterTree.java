@@ -27,7 +27,8 @@ import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextIn
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.textInXhtmlAttributeEncoder;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
-import com.aoindustries.net.UrlUtils;
+import com.aoindustries.servlet.ServletUtil;
+import com.aoindustries.servlet.URIComponent;
 import com.semanticcms.core.controller.CapturePage;
 import com.semanticcms.core.controller.SemanticCMS;
 import com.semanticcms.core.model.ChildRef;
@@ -171,20 +172,15 @@ final public class ElementFilterTree {
 			// Add page links
 			currentNode.addPageLink(pageRef);
 		}
-		final String servletPath;
-		if(out == null) {
-			// Will be unused
-			servletPath = null;
-		} else {
+		if(out != null) {
+			final String servletPath;
 			if(element == null) {
 				servletPath = pageRef.getBookRef().getPrefix() + pageRef.getPath();
 			} else {
 				String elemId = element.getId();
 				assert elemId != null;
-				servletPath = pageRef.getBookRef().getPrefix() + pageRef.getPath() + '#' + elemId;
+				servletPath = pageRef.getBookRef().getPrefix() + pageRef.getPath() + '#' + URIComponent.FRAGMENT.encode(elemId, response);
 			}
-		}
-		if(out != null) {
 			out.write("<li");
 			HtmlRenderer htmlRenderer = HtmlRenderer.getInstance(servletContext);
 			String listItemCssClass = htmlRenderer.getListItemCssClass(node);
@@ -197,17 +193,21 @@ final public class ElementFilterTree {
 			Integer index = pageIndex==null ? null : pageIndex.getPageIndex(pageRef);
 			if(index != null) {
 				out.write('#');
-				PageIndex.appendIdInPage(
-					index,
-					element==null ? null : element.getId(),
-					new MediaWriter(textInXhtmlAttributeEncoder, out)
+				URIComponent.FRAGMENT.encode(
+					PageIndex.getRefId(
+						index,
+						element==null ? null : element.getId()
+					),
+					response,
+					out,
+					textInXhtmlAttributeEncoder
 				);
 			} else {
 				encodeTextInXhtmlAttribute(
 					response.encodeURL(
-						UrlUtils.encodeUrlPath(
+						ServletUtil.encodeURI(
 							request.getContextPath() + servletPath,
-							response.getCharacterEncoding()
+							response
 						)
 					),
 					out

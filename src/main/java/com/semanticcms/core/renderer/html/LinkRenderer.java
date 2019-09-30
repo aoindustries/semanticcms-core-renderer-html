@@ -29,8 +29,9 @@ import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.textInXhtmlA
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.net.DomainName;
-import com.aoindustries.net.HttpParameters;
 import com.aoindustries.net.Path;
+import com.aoindustries.net.URIParameters;
+import com.aoindustries.servlet.URIComponent;
 import com.aoindustries.servlet.http.LastModifiedServlet;
 import static com.aoindustries.taglib.AttributeUtils.resolveValue;
 import static com.aoindustries.util.StringUtility.nullIfEmpty;
@@ -51,7 +52,6 @@ import com.semanticcms.core.pages.local.CurrentNode;
 import com.semanticcms.core.pages.local.CurrentPage;
 import java.io.IOException;
 import java.io.Writer;
-import java.net.URLEncoder;
 import javax.el.ELContext;
 import javax.el.ValueExpression;
 import javax.servlet.ServletContext;
@@ -73,6 +73,7 @@ final public class LinkRenderer {
 	 * @see  #writeBrokenPathInXhtml(com.semanticcms.core.model.PageRef, java.lang.String, java.lang.Appendable)
 	 * @see  #getBrokenPath(com.semanticcms.core.model.PageRef, java.lang.String)
 	 */
+	// TODO: Encoder variants
 	public static void writeBrokenPath(PageRef pageRef, String targetId, Appendable out) throws IOException {
 		BookRef bookRef = pageRef.getBookRef();
 		out
@@ -107,7 +108,8 @@ final public class LinkRenderer {
 	 */
 	public static String getBrokenPath(PageRef pageRef, String targetId) {
 		BookRef bookRef = pageRef.getBookRef();
-		int sbLen = 1 // '¿'
+		int sbLen =
+			1 // '¿'
 			+ bookRef.getDomain().toString().length()
 			+ 1 // ':'
 			+ bookRef.getPrefix().length()
@@ -145,6 +147,7 @@ final public class LinkRenderer {
 	 * @see  #writeBrokenPath(com.semanticcms.core.model.PageRef, java.lang.String, java.lang.Appendable)
 	 * @see  #getBrokenPath(com.semanticcms.core.model.PageRef, java.lang.String)
 	 */
+	// TODO: Convert to a single Encoder variant
 	public static void writeBrokenPathInXhtml(PageRef pageRef, String targetId, Appendable out) throws IOException {
 		BookRef bookRef = pageRef.getBookRef();
 		out.append('¿');
@@ -245,7 +248,7 @@ final public class LinkRenderer {
 		ValueExpression anchor,
 		ValueExpression viewName,
 		boolean small,
-	    HttpParameters params,
+	    URIParameters params,
 		ValueExpression clazz,
 		LinkRendererBody<E> body
 	) throws E, ServletException, IOException, SkipPageException {
@@ -319,7 +322,7 @@ final public class LinkRenderer {
 		String anchor,
 		String viewName,
 		boolean small,
-	    HttpParameters params,
+	    URIParameters params,
 		Object clazz,
 		LinkRendererBody<E> body,
 		CaptureLevel captureLevel
@@ -348,8 +351,6 @@ final public class LinkRenderer {
 		// Add page links
 		if(currentNode != null) currentNode.addPageLink(targetPageRef);
 		if(captureLevel == CaptureLevel.BODY) {
-			final String responseEncoding = response.getCharacterEncoding();
-
 			element = nullIfEmpty(element);
 			anchor = nullIfEmpty(anchor);
 			if(element != null && anchor != null) {
@@ -417,7 +418,7 @@ final public class LinkRenderer {
 					if(anchor == null) {
 						// Link to page
 						if(index != null && isDefaultView) {
-							href = '#' + URLEncoder.encode(PageIndex.getRefId(index, null), responseEncoding);
+							href = '#' + URIComponent.FRAGMENT.encode(PageIndex.getRefId(index, null), response);
 						} else {
 							// TODO: Support multi-domain
 							StringBuilder url = new StringBuilder()
@@ -425,9 +426,8 @@ final public class LinkRenderer {
 								.append(targetPageRef.getPath());
 							if(!isDefaultView) {
 								boolean hasQuestion = url.lastIndexOf("?") != -1;
-								url
-									.append(hasQuestion ? "&view=" : "?view=")
-									.append(URLEncoder.encode(viewName, responseEncoding));
+								url.append(hasQuestion ? "&view=" : "?view=");
+								URIComponent.QUERY.encode(viewName, response, url);
 							}
 							href = url.toString();
 						}
@@ -435,10 +435,10 @@ final public class LinkRenderer {
 						// Link to anchor in page
 						if(index != null && isDefaultView) {
 							// Link to target in indexed page (view=all mode)
-							href = '#' + URLEncoder.encode(PageIndex.getRefId(index, anchor), responseEncoding);
+							href = '#' + URIComponent.FRAGMENT.encode(PageIndex.getRefId(index, anchor), response);
 						} else if(currentPage!=null && currentPage.equals(targetPage) && isDefaultView) {
 							// Link to target on same page
-							href = '#' + URLEncoder.encode(anchor, responseEncoding);
+							href = '#' + URIComponent.FRAGMENT.encode(anchor, response);
 						} else {
 							// Link to target on different page (or same page, different view)
 							// TODO: Support multi-domain
@@ -447,21 +447,21 @@ final public class LinkRenderer {
 								.append(targetPageRef.getPath());
 							if(!isDefaultView) {
 								boolean hasQuestion = url.lastIndexOf("?") != -1;
-								url
-									.append(hasQuestion ? "&view=" : "?view=")
-									.append(URLEncoder.encode(viewName, responseEncoding));
+								url.append(hasQuestion ? "&view=" : "?view=");
+								URIComponent.QUERY.encode(viewName, response, url);
 							}
-							url.append('#').append(URLEncoder.encode(anchor, responseEncoding));
+							url.append('#');
+							URIComponent.FRAGMENT.encode(anchor, response, url);
 							href = url.toString();
 						}
 					}
 				} else {
 					if(index != null && isDefaultView) {
 						// Link to target in indexed page (view=all mode)
-						href = '#' + URLEncoder.encode(PageIndex.getRefId(index, element), responseEncoding);
+						href = '#' + URIComponent.FRAGMENT.encode(PageIndex.getRefId(index, element), response);
 					} else if(currentPage!=null && currentPage.equals(targetPage) && isDefaultView) {
 						// Link to target on same page
-						href = '#' + URLEncoder.encode(element, responseEncoding);
+						href = '#' + URIComponent.FRAGMENT.encode(element, response);
 					} else {
 						// Link to target on different page (or same page, different view)
 						// TODO: Support multi-domain
@@ -470,11 +470,11 @@ final public class LinkRenderer {
 							.append(targetPageRef.getPath());
 						if(!isDefaultView) {
 							boolean hasQuestion = url.lastIndexOf("?") != -1;
-							url
-								.append(hasQuestion ? "&view=" : "?view=")
-								.append(URLEncoder.encode(viewName, responseEncoding));
+							url.append(hasQuestion ? "&view=" : "?view=");
+							URIComponent.QUERY.encode(viewName, response, url);
 						}
-						url.append('#').append(URLEncoder.encode(element, responseEncoding));
+						url.append('#');
+						URIComponent.FRAGMENT.encode(element, response, url);
 						href = url.toString();
 					}
 				}

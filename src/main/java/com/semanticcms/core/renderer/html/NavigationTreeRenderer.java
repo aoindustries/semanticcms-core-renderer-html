@@ -29,6 +29,8 @@ import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.net.DomainName;
 import com.aoindustries.net.Path;
+import com.aoindustries.servlet.ServletUtil;
+import com.aoindustries.servlet.URIComponent;
 import static com.aoindustries.taglib.AttributeUtils.resolveValue;
 import com.aoindustries.util.StringUtility;
 import static com.aoindustries.util.StringUtility.nullIfEmpty;
@@ -105,6 +107,7 @@ final public class NavigationTreeRenderer {
 			+ (childRefs==null ? 0 : childRefs.size())
 		);
 		if(includeElements) {
+			assert childElements != null;
 			for(Element childElem : childElements) {
 				if(!childElem.isHidden()) childNodes.add(childElem);
 			}
@@ -478,7 +481,21 @@ final public class NavigationTreeRenderer {
 			} else {
 				String elemId = element.getId();
 				assert elemId != null;
-				servletPath = pageRef.getBookRef().getPrefix() + pageRef.getPath() + '#' + elemId;
+				String bookPrefix = pageRef.getBookRef().getPrefix();
+				String pagePath = pageRef.getPath().toString();
+				int sbLen =
+					bookPrefix.length()
+					+ pagePath.length()
+					+ 1 // '#'
+					+ elemId.length();
+				StringBuilder sb = new StringBuilder(sbLen);
+				sb
+					.append(bookPrefix)
+					.append(pagePath)
+					.append('#')
+					.append(elemId);
+				assert sb.length() == sbLen;
+				servletPath = sb.toString();
 			}
 		}
 		if(out != null) {
@@ -537,18 +554,23 @@ final public class NavigationTreeRenderer {
 			out.write(" href=\"");
 			Integer index = pageIndex==null ? null : pageIndex.getPageIndex(pageRef);
 			if(index != null) {
+				// TODO: Send all anchor-only through response encoding, too?
 				out.write('#');
-				PageIndex.appendIdInPage(
-					index,
-					element==null ? null : element.getId(),
-					new MediaWriter(textInXhtmlAttributeEncoder, out)
+				URIComponent.FRAGMENT.encode(
+					PageIndex.getRefId(
+						index,
+						element==null ? null : element.getId()
+					),
+					response,
+					out,
+					textInXhtmlAttributeEncoder
 				);
 			} else {
 				encodeTextInXhtmlAttribute(
 					response.encodeURL(
-						com.aoindustries.net.UrlUtils.encodeUrlPath(
+						ServletUtil.encodeURI(
 							request.getContextPath() + servletPath,
-							response.getCharacterEncoding()
+							response
 						)
 					),
 					out

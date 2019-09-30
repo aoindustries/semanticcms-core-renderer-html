@@ -130,12 +130,58 @@ public class PageIndex {
 	public static String getRefId(
 		ServletContext servletContext,
 		HttpServletRequest request,
+		PageIndex pageIndex,
 		String id
 	) throws ServletException {
-		PageIndex pageIndex = getCurrentPageIndex(request);
 		// No page index
 		if(pageIndex == null) return id;
 		Integer index = pageIndex.getPageIndex(PageRefResolver.getCurrentPageRef(servletContext, request));
+		// Page not in index
+		if(index == null) return id;
+		if(id == null || id.isEmpty()) {
+			// Page in index
+			return "page" + (index + 1);
+		} else {
+			// Page in index with id
+			return "page" + (index + 1) + '-' + id;
+		}
+	}
+
+	/**
+	 * Gets an id for use in the current page.  If the page is part of a page index,
+	 * as in a combined view, will be "page#-id".  Otherwise, the id is unchanged.
+	 *
+	 * @param  id  optional, id not added when null or empty
+	 */
+	public static String getRefId(
+		ServletContext servletContext,
+		HttpServletRequest request,
+		String id
+	) throws ServletException {
+		return getRefId(
+			servletContext,
+			request,
+			getCurrentPageIndex(request),
+			id
+		);
+	}
+
+	/**
+	 * Gets an id for use in referencing the given page.  If the page is part of a page index,
+	 * as in a combined view, will be "page#-id".  Otherwise, the id is unchanged.
+	 *
+	 * @param  id  optional, id not added when null or empty
+	 *
+	 * @see  #appendIdInPage(com.semanticcms.core.servlet.PageIndex, com.semanticcms.core.model.Page, java.lang.String, java.lang.Appendable)
+	 */
+	public static String getRefIdInPage(
+		PageIndex pageIndex,
+		Page page,
+		String id
+	) {
+		// No page index
+		if(pageIndex == null) return id;
+		Integer index = pageIndex.getPageIndex(page.getPageRef());
 		// Page not in index
 		if(index == null) return id;
 		if(id == null || id.isEmpty()) {
@@ -156,24 +202,11 @@ public class PageIndex {
 	 * @see  #appendIdInPage(com.semanticcms.core.servlet.PageIndex, com.semanticcms.core.model.Page, java.lang.String, java.lang.Appendable)
 	 */
 	public static String getRefIdInPage(
-		ServletContext servletContext,
 		HttpServletRequest request,
 		Page page,
 		String id
 	) {
-		PageIndex pageIndex = getCurrentPageIndex(request);
-		// No page index
-		if(pageIndex == null) return id;
-		Integer index = pageIndex.getPageIndex(page.getPageRef());
-		// Page not in index
-		if(index == null) return id;
-		if(id == null || id.isEmpty()) {
-			// Page in index
-			return "page" + (index + 1);
-		} else {
-			// Page in index with id
-			return "page" + (index + 1) + '-' + id;
-		}
+		return getRefIdInPage(getCurrentPageIndex(request), page, id);
 	}
 
 	/**
@@ -183,6 +216,7 @@ public class PageIndex {
 	 *
 	 * @param  id  optional, id not added when null or empty
 	 */
+	// TODO: Encoder variants
 	public static void appendIdInPage(Integer index, String id, Appendable out) throws IOException {
 		if(index != null) {
 			out.append("page");

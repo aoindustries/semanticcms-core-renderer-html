@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-renderer-html - SemanticCMS pages rendered as HTML in a Servlet environment.
- * Copyright (C) 2016, 2017  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -22,6 +22,8 @@
  */
 package com.semanticcms.core.renderer.html;
 
+import com.aoindustries.servlet.ServletUtil;
+import com.aoindustries.servlet.URIComponent;
 import com.semanticcms.core.controller.AuthorUtils;
 import com.semanticcms.core.controller.Book;
 import com.semanticcms.core.controller.BookUtils;
@@ -34,7 +36,6 @@ import com.semanticcms.core.model.Link;
 import com.semanticcms.core.model.Page;
 import com.semanticcms.core.model.PageRef;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -224,33 +225,36 @@ abstract public class View implements Comparable<View> {
 	) throws ServletException, IOException {
 		PageRef pageRef = page.getPageRef();
 		BookRef bookRef = pageRef.getBookRef();
-		Book book = SemanticCMS.getInstance(servletContext).getBook(pageRef.getBookRef());
+		// TODO: Should we use servletPath here, then remove the book prefix?
+		//       We were passing a partial path to response.encodeURL
+		String encodedBookPrefix = ServletUtil.encodeURI(bookRef.getPrefix(), response);
 		String encodedServletPath;
 		{
-			StringBuilder servletPath = new StringBuilder()
-				.append(bookRef.getPrefix())
-				.append(pageRef.getPath());
+			StringBuilder servletPath = new StringBuilder();
+			servletPath.append(encodedBookPrefix);
+			ServletUtil.encodeURI(pageRef.getPath().toString(), response, servletPath);
 			if(!isDefault()) {
-				servletPath
-					.append("?view=")
-					.append(URLEncoder.encode(getName(), response.getCharacterEncoding()));
+				servletPath.append("?view=");
+				URIComponent.QUERY.encode(getName(), response, servletPath);
 			}
 			encodedServletPath = response.encodeURL(servletPath.toString());
 		}
-		// TODO: Should we use servletPath here, then remove the book prefix?
-		//       We were passing a partial path to response.encodeURL
-		//       To be safe, we're encoding the servletPath, then picking it back into a bookPath
+		// To be safe, we're encoding the servletPath, then picking it back into a bookPath
+		// TODO: How would this interact with things like PrettyUrlFilter?
 		String encodedBookPath;
 		{
-			String bookPrefix = bookRef.getPrefix();
-			if(bookPrefix.isEmpty()) {
+			if(encodedBookPrefix.isEmpty()) {
 				encodedBookPath = encodedServletPath;
 			} else {
-				if(!encodedServletPath.startsWith(bookPrefix)) throw new IllegalStateException("Encoded servlet path is outside this book, unable to canonicalize: encodedServletPath = " + encodedServletPath);
-				encodedBookPath = encodedServletPath.substring(bookPrefix.length());
+				if(!encodedServletPath.startsWith(encodedBookPrefix)) throw new IllegalStateException("Encoded servlet path is outside this book, unable to canonicalize: encodedServletPath = " + encodedServletPath);
+				encodedBookPath = encodedServletPath.substring(encodedBookPrefix.length());
 			}
 		}
-		return BookUtils.getCanonicalBase(servletContext, request, book) + encodedBookPath;
+		return BookUtils.getCanonicalBase(
+			servletContext,
+			request,
+			SemanticCMS.getInstance(servletContext).getBook(bookRef)
+		) + encodedBookPath;
 	}
 
 	/**
