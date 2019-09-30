@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-renderer-html - SemanticCMS pages rendered as HTML in a Servlet environment.
- * Copyright (C) 2013, 2014, 2015, 2016, 2017  AO Industries, Inc.
+ * Copyright (C) 2013, 2014, 2015, 2016, 2017, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -23,7 +23,8 @@
 package com.semanticcms.core.renderer.html;
 
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextInXhtmlAttribute;
-import com.aoindustries.net.HttpParameters;
+import com.aoindustries.net.URIParameters;
+import com.aoindustries.servlet.http.HttpServletUtil;
 import com.aoindustries.servlet.http.LastModifiedServlet;
 import java.io.IOException;
 import javax.servlet.ServletContext;
@@ -47,14 +48,14 @@ final public class UrlUtils {
 		HttpServletResponse response,
 		Appendable out,
 		String href,
-		HttpParameters params,
+		URIParameters params,
 		boolean hrefAbsolute,
 		LastModifiedServlet.AddLastModifiedWhen addLastModified
 	) throws ServletException, IOException {
 		if(href != null) {
 			out.append(" href=\"");
 			encodeTextInXhtmlAttribute(
-				com.aoindustries.net.UrlUtils.buildUrl(
+				HttpServletUtil.buildUrl(
 					servletContext,
 					request,
 					response,
@@ -77,14 +78,14 @@ final public class UrlUtils {
 		HttpServletResponse response,
 		Appendable out,
 		String src,
-		HttpParameters params,
+		URIParameters params,
 		boolean srcAbsolute,
 		LastModifiedServlet.AddLastModifiedWhen addLastModified
 	) throws ServletException, IOException {
 		if(src != null) {
 			out.append(" src=\"");
 			encodeTextInXhtmlAttribute(
-				com.aoindustries.net.UrlUtils.buildUrl(
+				HttpServletUtil.buildUrl(
 					servletContext,
 					request,
 					response,
