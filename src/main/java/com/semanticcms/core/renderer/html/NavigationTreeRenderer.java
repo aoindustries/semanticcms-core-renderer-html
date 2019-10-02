@@ -29,8 +29,7 @@ import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.net.DomainName;
 import com.aoindustries.net.Path;
-import com.aoindustries.servlet.ServletUtil;
-import com.aoindustries.servlet.URIComponent;
+import com.aoindustries.net.URIEncoder;
 import static com.aoindustries.taglib.AttributeUtils.resolveValue;
 import com.aoindustries.util.StringUtility;
 import static com.aoindustries.util.StringUtility.nullIfEmpty;
@@ -556,21 +555,19 @@ final public class NavigationTreeRenderer {
 			if(index != null) {
 				// TODO: Send all anchor-only through response encoding, too?
 				out.write('#');
-				URIComponent.FRAGMENT.encode(
+				URIEncoder.encodeURIComponent(
 					PageIndex.getRefId(
 						index,
 						element==null ? null : element.getId()
 					),
-					response,
 					out,
 					textInXhtmlAttributeEncoder
 				);
 			} else {
 				encodeTextInXhtmlAttribute(
 					response.encodeURL(
-						ServletUtil.encodeURI(
-							request.getContextPath() + servletPath,
-							response
+						URIEncoder.encodeURI(
+							request.getContextPath() + servletPath
 						)
 					),
 					out

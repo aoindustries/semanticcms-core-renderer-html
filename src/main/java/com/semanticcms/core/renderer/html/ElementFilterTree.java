@@ -27,8 +27,7 @@ import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextIn
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.textInXhtmlAttributeEncoder;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
-import com.aoindustries.servlet.ServletUtil;
-import com.aoindustries.servlet.URIComponent;
+import com.aoindustries.net.URIEncoder;
 import com.semanticcms.core.controller.CapturePage;
 import com.semanticcms.core.controller.SemanticCMS;
 import com.semanticcms.core.model.ChildRef;
@@ -179,7 +178,7 @@ final public class ElementFilterTree {
 			} else {
 				String elemId = element.getId();
 				assert elemId != null;
-				servletPath = pageRef.getBookRef().getPrefix() + pageRef.getPath() + '#' + URIComponent.FRAGMENT.encode(elemId, response);
+				servletPath = pageRef.getBookRef().getPrefix() + pageRef.getPath() + '#' + URIEncoder.encodeURIComponent(elemId);
 			}
 			out.write("<li");
 			HtmlRenderer htmlRenderer = HtmlRenderer.getInstance(servletContext);
@@ -193,21 +192,19 @@ final public class ElementFilterTree {
 			Integer index = pageIndex==null ? null : pageIndex.getPageIndex(pageRef);
 			if(index != null) {
 				out.write('#');
-				URIComponent.FRAGMENT.encode(
+				URIEncoder.encodeURIComponent(
 					PageIndex.getRefId(
 						index,
 						element==null ? null : element.getId()
 					),
-					response,
 					out,
 					textInXhtmlAttributeEncoder
 				);
 			} else {
 				encodeTextInXhtmlAttribute(
 					response.encodeURL(
-						ServletUtil.encodeURI(
-							request.getContextPath() + servletPath,
-							response
+						URIEncoder.encodeURI(
+							request.getContextPath() + servletPath
 						)
 					),
 					out

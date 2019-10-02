@@ -30,8 +30,8 @@ import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.net.DomainName;
 import com.aoindustries.net.Path;
+import com.aoindustries.net.URIEncoder;
 import com.aoindustries.net.URIParameters;
-import com.aoindustries.servlet.URIComponent;
 import com.aoindustries.servlet.http.LastModifiedServlet;
 import static com.aoindustries.taglib.AttributeUtils.resolveValue;
 import static com.aoindustries.util.StringUtility.nullIfEmpty;
@@ -418,7 +418,7 @@ final public class LinkRenderer {
 					if(anchor == null) {
 						// Link to page
 						if(index != null && isDefaultView) {
-							href = '#' + URIComponent.FRAGMENT.encode(PageIndex.getRefId(index, null), response);
+							href = '#' + URIEncoder.encodeURIComponent(PageIndex.getRefId(index, null));
 						} else {
 							// TODO: Support multi-domain
 							StringBuilder url = new StringBuilder()
@@ -427,7 +427,7 @@ final public class LinkRenderer {
 							if(!isDefaultView) {
 								boolean hasQuestion = url.lastIndexOf("?") != -1;
 								url.append(hasQuestion ? "&view=" : "?view=");
-								URIComponent.QUERY.encode(viewName, response, url);
+								URIEncoder.encodeURIComponent(viewName, url);
 							}
 							href = url.toString();
 						}
@@ -435,10 +435,10 @@ final public class LinkRenderer {
 						// Link to anchor in page
 						if(index != null && isDefaultView) {
 							// Link to target in indexed page (view=all mode)
-							href = '#' + URIComponent.FRAGMENT.encode(PageIndex.getRefId(index, anchor), response);
+							href = '#' + URIEncoder.encodeURIComponent(PageIndex.getRefId(index, anchor));
 						} else if(currentPage!=null && currentPage.equals(targetPage) && isDefaultView) {
 							// Link to target on same page
-							href = '#' + URIComponent.FRAGMENT.encode(anchor, response);
+							href = '#' + URIEncoder.encodeURIComponent(anchor);
 						} else {
 							// Link to target on different page (or same page, different view)
 							// TODO: Support multi-domain
@@ -448,20 +448,20 @@ final public class LinkRenderer {
 							if(!isDefaultView) {
 								boolean hasQuestion = url.lastIndexOf("?") != -1;
 								url.append(hasQuestion ? "&view=" : "?view=");
-								URIComponent.QUERY.encode(viewName, response, url);
+								URIEncoder.encodeURIComponent(viewName, url);
 							}
 							url.append('#');
-							URIComponent.FRAGMENT.encode(anchor, response, url);
+							URIEncoder.encodeURIComponent(anchor, url);
 							href = url.toString();
 						}
 					}
 				} else {
 					if(index != null && isDefaultView) {
 						// Link to target in indexed page (view=all mode)
-						href = '#' + URIComponent.FRAGMENT.encode(PageIndex.getRefId(index, element), response);
+						href = '#' + URIEncoder.encodeURIComponent(PageIndex.getRefId(index, element));
 					} else if(currentPage!=null && currentPage.equals(targetPage) && isDefaultView) {
 						// Link to target on same page
-						href = '#' + URIComponent.FRAGMENT.encode(element, response);
+						href = '#' + URIEncoder.encodeURIComponent(element);
 					} else {
 						// Link to target on different page (or same page, different view)
 						// TODO: Support multi-domain
@@ -471,10 +471,10 @@ final public class LinkRenderer {
 						if(!isDefaultView) {
 							boolean hasQuestion = url.lastIndexOf("?") != -1;
 							url.append(hasQuestion ? "&view=" : "?view=");
-							URIComponent.QUERY.encode(viewName, response, url);
+							URIEncoder.encodeURIComponent(viewName, url);
 						}
 						url.append('#');
-						URIComponent.FRAGMENT.encode(element, response, url);
+						URIEncoder.encodeURIComponent(element, url);
 						href = url.toString();
 					}
 				}
