@@ -34,6 +34,7 @@ import com.semanticcms.core.model.Copyright;
 import com.semanticcms.core.model.Link;
 import com.semanticcms.core.model.Page;
 import com.semanticcms.core.model.PageRef;
+import com.semanticcms.core.pages.CaptureLevel;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -143,8 +144,9 @@ abstract public class View implements Comparable<View> {
 
 	/**
 	 * Checks if a view applies in global navigation context.
-	 * 
-	 * @implSpec  returns {@code true} by default
+	 * <p>
+	 * <strong>Implementation Note:</strong> returns {@code true} by default
+	 * <p>
 	 */
 	public boolean getAppliesGlobally() {
 		return true;
@@ -158,8 +160,9 @@ abstract public class View implements Comparable<View> {
 	 * TODO: Store the captureLevel in effect when a page is captured, and confirm that here and other places where
 	 *       certain capture levels are required for correct behavior.  Could also automatically re-capture at a higher level
 	 *       instead of throwing an exception.
-	 *
-	 * @implSpec  returns {@code true} by default
+	 * <p>
+	 * <strong>Implementation Note:</strong> returns {@code true} by default
+	 * </p>
 	 */
 	public boolean isApplicable(
 		ServletContext servletContext,
@@ -172,10 +175,11 @@ abstract public class View implements Comparable<View> {
 
 	/**
 	 * Gets an id to use for the main navigation link to this view.
+	 * <p>
+	 * <strong>Implementation Note:</strong> returns {@code null} by default
+	 * </p>
 	 *
 	 * @return  the ID or null for none
-	 *
-	 * @implSpec  returns {@code null} by default
 	 */
 	public String getLinkId() {
 		return null;
@@ -183,10 +187,11 @@ abstract public class View implements Comparable<View> {
 
 	/**
 	 * Gets the CSS class to use for the main navigation link to this view.
+	 * <p>
+	 * <strong>Implementation Note:</strong> returns {@code null} by default
+	 * </p>
 	 *
 	 * @return  the CSS class or null for none
-	 *
-	 * @implSpec  returns {@code null} by default
 	 */
 	public String getLinkCssClass(
 		ServletContext servletContext,
@@ -198,8 +203,9 @@ abstract public class View implements Comparable<View> {
 
 	/**
 	 * Gets the optional additional parameter to a view link.
-	 *
-	 * @implSpec  returns empty map
+	 * <p>
+	 * <strong>Implementation Note:</strong> returns empty map by default
+	 * </p>
 	 */
 	public Map<String,List<String>> getLinkParams(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response, Page page) {
 		return Collections.emptyMap();
@@ -214,7 +220,7 @@ abstract public class View implements Comparable<View> {
 	 * This URL is absolute and has already been response encoded.
 	 * </p>
 	 * @see  Book#getCanonicalBase()
-	 * @see  BookUtils#getCanonicalBase(javax.servlet.ServletContext, javax.servlet.http.HttpServletRequest, com.semanticcms.core.pages.Book)
+	 * @see  BookUtils#getCanonicalBase(javax.servlet.ServletContext, javax.servlet.http.HttpServletRequest, com.semanticcms.core.controller.Book)
 	 */
 	public String getCanonicalUrl(
 		ServletContext servletContext,
@@ -259,8 +265,9 @@ abstract public class View implements Comparable<View> {
 	/**
 	 * Gets the effective last modified time, if known, for the given page in this view.
 	 * This is used for things such as sitemaps.
-	 *
-	 * @implSpec  This default implementation returns {@code null} indicating not applicable to this view.
+	 * <p>
+	 * <strong>Implementation Note:</strong> This default implementation returns {@code null} indicating not applicable to this view.
+	 * </p>
 	 *
 	 * @return  The effective last modified time or {@code null} if unknown or not applicable.
 	 */
@@ -346,10 +353,11 @@ abstract public class View implements Comparable<View> {
 	/**
 	 * Gets any per-view scripts, when have the same name as globally registered
 	 * scripts, must have matching src.
+	 * <p>
+	 * <strong>Implementation Note:</strong> returns empty map by default
+	 * </p>
 	 *
-	 * @see  SemanticCMS#getScripts()
-	 *
-	 * @implSpec  returns empty map by default
+	 * @see  HtmlRenderer#getScripts()
 	 */
 	public Map<String,String> getScripts() {
 		return Collections.emptyMap();

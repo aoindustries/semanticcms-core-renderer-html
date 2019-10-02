@@ -379,7 +379,7 @@ public class HtmlRenderer implements Renderer {
 	 * 
 	 * @return  The CSS class or {@code null} when element is null or no class registered for it or any super class.
 	 *
-	 * @see  #getLinkCssClass(java.lang.Class)
+	 * @see  LinkCssClassResolver#getCssLinkClass(com.semanticcms.core.model.Element)
 	 */
 	public <E extends com.semanticcms.core.model.Element> String getLinkCssClass(E element) {
 		if(element == null) return null;
@@ -460,7 +460,7 @@ public class HtmlRenderer implements Renderer {
 	 *
 	 * @return  The CSS class or {@code null} when node is null or no class registered for it or any super class.
 	 *
-	 * @see  #getListItemCssClass(java.lang.Class)
+	 * @see  ListItemCssClassResolver#getListItemCssClass(com.semanticcms.core.model.Node)
 	 */
 	public <N extends com.semanticcms.core.model.Node> String getListItemCssClass(N node) {
 		if(node == null) return null;
