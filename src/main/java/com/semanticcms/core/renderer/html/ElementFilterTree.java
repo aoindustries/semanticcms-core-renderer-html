@@ -24,7 +24,6 @@ package com.semanticcms.core.renderer.html;
 
 import com.aoindustries.encoding.MediaWriter;
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextInXhtmlAttribute;
-import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.textInXhtmlAttributeEncoder;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.net.URIEncoder;
@@ -172,14 +171,6 @@ final public class ElementFilterTree {
 			currentNode.addPageLink(pageRef);
 		}
 		if(out != null) {
-			final String servletPath;
-			if(element == null) {
-				servletPath = pageRef.getBookRef().getPrefix() + pageRef.getPath();
-			} else {
-				String elemId = element.getId();
-				assert elemId != null;
-				servletPath = pageRef.getBookRef().getPrefix() + pageRef.getPath() + '#' + URIEncoder.encodeURIComponent(elemId);
-			}
 			out.write("<li");
 			HtmlRenderer htmlRenderer = HtmlRenderer.getInstance(servletContext);
 			String listItemCssClass = htmlRenderer.getListItemCssClass(node);
@@ -189,27 +180,34 @@ final public class ElementFilterTree {
 				out.write('"');
 			}
 			out.write("><a href=\"");
+			StringBuilder url = new StringBuilder();
 			Integer index = pageIndex==null ? null : pageIndex.getPageIndex(pageRef);
 			if(index != null) {
-				out.write('#');
+				url.append('#');
 				URIEncoder.encodeURIComponent(
 					PageIndex.getRefId(
 						index,
 						element==null ? null : element.getId()
 					),
-					textInXhtmlAttributeEncoder,
-					out
+					url
 				);
 			} else {
-				encodeTextInXhtmlAttribute(
-					response.encodeURL(
-						URIEncoder.encodeURI(
-							request.getContextPath() + servletPath
-						)
-					),
-					out
-				);
+				URIEncoder.encodeURI(request.getContextPath(), url);
+				URIEncoder.encodeURI(pageRef.getBookRef().getPrefix(), url);
+				URIEncoder.encodeURI(pageRef.getPath().toString(), url);
+				if(element != null) {
+					String elemId = element.getId();
+					assert elemId != null;
+					url.append('#');
+					URIEncoder.encodeURIComponent(elemId, url);
+				}
 			}
+			encodeTextInXhtmlAttribute(
+				response.encodeURL(
+					url.toString()
+				),
+				out
+			);
 			out.write("\">");
 			node.appendLabel(new MediaWriter(textInXhtmlEncoder, out));
 			if(index != null) {

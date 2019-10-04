@@ -24,11 +24,11 @@ package com.semanticcms.core.renderer.html;
 
 import com.aoindustries.encoding.MediaWriter;
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextInXhtmlAttribute;
-import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.textInXhtmlAttributeEncoder;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.net.DomainName;
 import com.aoindustries.net.Path;
+import com.aoindustries.net.URIDecoder;
 import com.aoindustries.net.URIEncoder;
 import static com.aoindustries.taglib.AttributeUtils.resolveValue;
 import com.aoindustries.util.StringUtility;
@@ -478,21 +478,22 @@ final public class NavigationTreeRenderer {
 			if(element == null) {
 				servletPath = pageRef.getBookRef().getPrefix() + pageRef.getPath();
 			} else {
-				String elemId = element.getId();
-				assert elemId != null;
+				// TODO: encodeIRIComponent to do this in one shot?
+				String elemIdIri = URIDecoder.decodeURI(URIEncoder.encodeURIComponent(element.getId()));
+				assert elemIdIri != null;
 				String bookPrefix = pageRef.getBookRef().getPrefix();
 				String pagePath = pageRef.getPath().toString();
 				int sbLen =
 					bookPrefix.length()
 					+ pagePath.length()
 					+ 1 // '#'
-					+ elemId.length();
+					+ elemIdIri.length();
 				StringBuilder sb = new StringBuilder(sbLen);
 				sb
 					.append(bookPrefix)
 					.append(pagePath)
 					.append('#')
-					.append(elemId);
+					.append(elemIdIri);
 				assert sb.length() == sbLen;
 				servletPath = sb.toString();
 			}
@@ -550,29 +551,28 @@ final public class NavigationTreeRenderer {
 				encodeTextInXhtmlAttribute(target, out);
 				out.write('"');
 			}
-			out.write(" href=\"");
 			Integer index = pageIndex==null ? null : pageIndex.getPageIndex(pageRef);
+			out.write(" href=\"");
+			StringBuilder href = new StringBuilder();
 			if(index != null) {
-				// TODO: Send all anchor-only through response encoding, too?
-				out.write('#');
+				href.append('#');
 				URIEncoder.encodeURIComponent(
 					PageIndex.getRefId(
 						index,
 						element==null ? null : element.getId()
 					),
-					textInXhtmlAttributeEncoder,
-					out
+					href
 				);
 			} else {
-				encodeTextInXhtmlAttribute(
-					response.encodeURL(
-						URIEncoder.encodeURI(
-							request.getContextPath() + servletPath
-						)
-					),
-					out
-				);
+				URIEncoder.encodeURI(request.getContextPath(), href);
+				URIEncoder.encodeURI(servletPath, href);
 			}
+			encodeTextInXhtmlAttribute(
+				response.encodeURL(
+					href.toString()
+				),
+				out
+			);
 			out.write("\">");
 			if(node instanceof Page) {
 				// Use shortTitle for pages
