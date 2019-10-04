@@ -197,8 +197,8 @@ final public class ElementFilterTree {
 						index,
 						element==null ? null : element.getId()
 					),
-					out,
-					textInXhtmlAttributeEncoder
+					textInXhtmlAttributeEncoder,
+					out
 				);
 			} else {
 				encodeTextInXhtmlAttribute(

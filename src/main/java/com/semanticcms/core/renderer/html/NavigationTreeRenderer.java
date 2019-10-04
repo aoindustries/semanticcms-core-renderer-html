@@ -560,8 +560,8 @@ final public class NavigationTreeRenderer {
 						index,
 						element==null ? null : element.getId()
 					),
-					out,
-					textInXhtmlAttributeEncoder
+					textInXhtmlAttributeEncoder,
+					out
 				);
 			} else {
 				encodeTextInXhtmlAttribute(
