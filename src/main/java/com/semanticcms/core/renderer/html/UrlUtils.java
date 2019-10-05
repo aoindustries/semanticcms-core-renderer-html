@@ -49,7 +49,7 @@ final public class UrlUtils {
 		Appendable out,
 		String href,
 		URIParameters params,
-		boolean hrefAbsolute,
+		boolean absolute,
 		boolean canonical,
 		LastModifiedServlet.AddLastModifiedWhen addLastModified
 	) throws ServletException, IOException {
@@ -62,7 +62,7 @@ final public class UrlUtils {
 					response,
 					href,
 					params,
-					hrefAbsolute,
+					absolute,
 					canonical,
 					addLastModified
 				),
@@ -86,7 +86,7 @@ final public class UrlUtils {
 		Appendable out,
 		String src,
 		URIParameters params,
-		boolean srcAbsolute,
+		boolean absolute,
 		boolean canonical,
 		LastModifiedServlet.AddLastModifiedWhen addLastModified
 	) throws ServletException, IOException {
@@ -99,7 +99,7 @@ final public class UrlUtils {
 					response,
 					src,
 					params,
-					srcAbsolute,
+					absolute,
 					canonical,
 					addLastModified
 				),
