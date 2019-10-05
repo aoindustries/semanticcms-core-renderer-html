@@ -485,6 +485,7 @@ final public class LinkRenderer {
 					href.toString(),
 					params,
 					false,
+					false,
 					LastModifiedServlet.AddLastModifiedWhen.FALSE
 				);
 			}
@@ -537,6 +538,7 @@ final public class LinkRenderer {
 					out,
 					href.toString(),
 					params,
+					false,
 					false,
 					LastModifiedServlet.AddLastModifiedWhen.FALSE
 				);

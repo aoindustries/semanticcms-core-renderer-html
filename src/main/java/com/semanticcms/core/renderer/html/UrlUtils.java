@@ -50,6 +50,7 @@ final public class UrlUtils {
 		String href,
 		URIParameters params,
 		boolean hrefAbsolute,
+		boolean canonical,
 		LastModifiedServlet.AddLastModifiedWhen addLastModified
 	) throws ServletException, IOException {
 		if(href != null) {
@@ -62,6 +63,7 @@ final public class UrlUtils {
 					href,
 					params,
 					hrefAbsolute,
+					canonical,
 					addLastModified
 				),
 				out
@@ -72,6 +74,11 @@ final public class UrlUtils {
 		}
 	}
 
+	/**
+	 * Writes a src attribute with parameters.
+	 * Adds contextPath to URLs that begin with a slash (/).
+	 * Encodes the URL.
+	 */
 	public static void writeSrc(
 		ServletContext servletContext,
 		HttpServletRequest request,
@@ -80,6 +87,7 @@ final public class UrlUtils {
 		String src,
 		URIParameters params,
 		boolean srcAbsolute,
+		boolean canonical,
 		LastModifiedServlet.AddLastModifiedWhen addLastModified
 	) throws ServletException, IOException {
 		if(src != null) {
@@ -92,6 +100,7 @@ final public class UrlUtils {
 					src,
 					params,
 					srcAbsolute,
+					canonical,
 					addLastModified
 				),
 				out
