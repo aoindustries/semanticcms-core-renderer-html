@@ -216,6 +216,8 @@ final public class LinkRenderer {
 				link.getView(),
 				link.getSmall(),
 				link.getParams(),
+				link.getAbsolute(),
+				link.getCanonical(),
 				link.getClazz(),
 				body,
 				captureLevel
@@ -249,6 +251,8 @@ final public class LinkRenderer {
 		ValueExpression viewName,
 		boolean small,
 	    URIParameters params,
+		boolean absolute,
+		boolean canonical,
 		ValueExpression clazz,
 		LinkRendererBody<E> body
 	) throws E, ServletException, IOException, SkipPageException {
@@ -302,6 +306,8 @@ final public class LinkRenderer {
 				viewNameStr,
 				small,
 				params,
+				absolute,
+				canonical,
 				clazzObj,
 				body,
 				captureLevel
@@ -323,6 +329,8 @@ final public class LinkRenderer {
 		String viewName,
 		boolean small,
 	    URIParameters params,
+		boolean absolute,
+		boolean canonical,
 		Object clazz,
 		LinkRendererBody<E> body,
 		CaptureLevel captureLevel
@@ -484,8 +492,8 @@ final public class LinkRenderer {
 					out,
 					href.toString(),
 					params,
-					false,
-					false,
+					absolute,
+					canonical,
 					LastModifiedServlet.AddLastModifiedWhen.FALSE
 				);
 			}
@@ -538,8 +546,8 @@ final public class LinkRenderer {
 					out,
 					href.toString(),
 					params,
-					false,
-					false,
+					absolute,
+					canonical,
 					LastModifiedServlet.AddLastModifiedWhen.FALSE
 				);
 				out.write(">[link]</a></sup></span>");
