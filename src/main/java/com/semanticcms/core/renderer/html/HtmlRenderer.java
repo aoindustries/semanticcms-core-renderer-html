@@ -595,6 +595,15 @@ public class HtmlRenderer implements Renderer {
 					assert theme != null;
 				}
 
+				// Clear the output buffer
+				response.resetBuffer();
+
+				// Set the content type
+				// TODO: Pass doctype and serialization through Page object itself.
+				// TODO: Split-out non-servlet parts of Html class into a new ao-html project first, and have it be a dependency of core-model.
+				// TODO:     We don't want the model picking-up any servlet-specific things, since we may want other non-servlet environments, too, like Play Framework
+				// TODO: ServletUtil.setContentType(response, serialization.getContentType(), Html.ENCODING.name());
+
 				// Forward to theme
 				theme.doTheme(servletContext, request, response, view, page);
 			}
