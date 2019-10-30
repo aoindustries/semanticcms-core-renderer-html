@@ -550,6 +550,8 @@ final public class LinkRenderer {
 					canonical,
 					LastModifiedServlet.AddLastModifiedWhen.FALSE
 				);
+				// TODO: Make [link] not copied during select/copy/paste, to not corrupt semantic meaning (and make more useful in copy/pasted code and scripts)?
+				// TODO: https://stackoverflow.com/questions/3271231/how-to-exclude-portions-of-text-when-copying
 				out.write(">[link]</a></sup></span>");
 			} else {
 				out.write("</a>");
