@@ -352,7 +352,7 @@ public class HtmlRenderer implements Renderer {
 	/**
 	 * Resolves the link CSS class for the given types of elements.
 	 */
-	@FunctionalInterface // TODO: Find and mark many others now that we're Java 1.8
+	@FunctionalInterface
 	public static interface LinkCssClassResolver<E extends com.semanticcms.core.model.Element> {
 		/**
 		 * Gets the CSS class to use in links to the given element.

@@ -62,6 +62,7 @@ import javax.servlet.jsp.SkipPageException;
 
 final public class LinkRenderer {
 
+	@FunctionalInterface
 	public static interface LinkRendererBody<E extends Throwable> {
 		void doBody(boolean discard) throws E, IOException, SkipPageException;
 	}

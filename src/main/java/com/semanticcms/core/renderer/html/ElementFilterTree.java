@@ -56,6 +56,7 @@ final public class ElementFilterTree {
 	/**
 	 * A filter to select elements by arbitrary conditions.
 	 */
+	@FunctionalInterface
 	public static interface ElementFilter {
 
 		/**

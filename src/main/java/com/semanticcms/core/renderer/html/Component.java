@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-renderer-html - SemanticCMS pages rendered as HTML in a Servlet environment.
- * Copyright (C) 2016, 2017  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
  * A component is able to render itself within the page.  The theme will
  * call all registered components at the correct stages of page rendering.
  */
+@FunctionalInterface
 public interface Component {
 
 	/**
