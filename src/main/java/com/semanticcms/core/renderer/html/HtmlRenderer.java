@@ -33,7 +33,6 @@ import com.semanticcms.core.renderer.servlet.ServletPageRenderer;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -174,12 +173,7 @@ public class HtmlRenderer implements Renderer {
 			// independent of the order components happened to be registered.
 			Collections.sort(
 				components,
-				new Comparator<Component>() {
-					@Override
-					public int compare(Component o1, Component o2) {
-						return o1.getClass().getName().compareTo(o2.getClass().getName());
-					}
-				}
+				(o1, o2) -> o1.getClass().getName().compareTo(o2.getClass().getName())
 			);
 		}
 	}
@@ -358,6 +352,7 @@ public class HtmlRenderer implements Renderer {
 	/**
 	 * Resolves the link CSS class for the given types of elements.
 	 */
+	@FunctionalInterface // TODO: Find and mark many others now that we're Java 1.8
 	public static interface LinkCssClassResolver<E extends com.semanticcms.core.model.Element> {
 		/**
 		 * Gets the CSS class to use in links to the given element.
@@ -424,12 +419,7 @@ public class HtmlRenderer implements Renderer {
 	) throws IllegalStateException {
 		addLinkCssClassResolver(
 			elementType,
-			new LinkCssClassResolver<E>() {
-				@Override
-				public String getCssLinkClass(E element) {
-					return cssLinkClass;
-				}
-			}
+			(E element) -> cssLinkClass
 		);
 	}
 	// </editor-fold>
@@ -439,6 +429,7 @@ public class HtmlRenderer implements Renderer {
 	/**
 	 * Resolves the list item CSS class for the given types of nodes.
 	 */
+	@FunctionalInterface
 	public static interface ListItemCssClassResolver<N extends com.semanticcms.core.model.Node> {
 		/**
 		 * Gets the CSS class to use in list items to the given node.
@@ -505,12 +496,7 @@ public class HtmlRenderer implements Renderer {
 	) throws IllegalStateException {
 		addListItemCssClassResolver(
 			nodeType,
-			new ListItemCssClassResolver<N>() {
-				@Override
-				public String getListItemCssClass(N node) {
-					return listItemCssClass;
-				}
-			}
+			node -> listItemCssClass
 		);
 	}
 	// </editor-fold>
