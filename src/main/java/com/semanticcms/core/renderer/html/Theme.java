@@ -22,10 +22,8 @@
  */
 package com.semanticcms.core.renderer.html;
 
-import com.aoindustries.html.Doctype;
-import com.aoindustries.html.Serialization;
-import com.aoindustries.html.servlet.DoctypeEE;
-import com.aoindustries.html.servlet.SerializationEE;
+import com.aoindustries.encoding.Doctype;
+import com.aoindustries.encoding.Serialization;
 import com.semanticcms.core.model.Page;
 import java.io.IOException;
 import javax.servlet.ServletContext;
@@ -89,8 +87,8 @@ abstract public class Theme {
 	 * on the request, and these must be considered in the HTML generation.
 	 * </p>
 	 *
-	 * @see SerializationEE#get(javax.servlet.ServletContext, javax.servlet.http.HttpServletRequest)
-	 * @see DoctypeEE#get(javax.servlet.ServletContext, javax.servlet.ServletRequest)
+	 * @see com.aoindustries.encoding.servlet.SerializationEE#get(javax.servlet.ServletContext, javax.servlet.http.HttpServletRequest)
+	 * @see com.aoindustries.encoding.servlet.DoctypeEE#get(javax.servlet.ServletContext, javax.servlet.ServletRequest)
 	 *
 	 * TODO: Is SkipPageException acceptable at the view rendering stage?
 	 */
