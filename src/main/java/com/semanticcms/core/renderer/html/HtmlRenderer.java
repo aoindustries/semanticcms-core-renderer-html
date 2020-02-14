@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-renderer-html - SemanticCMS pages rendered as HTML in a Servlet environment.
- * Copyright (C) 2014, 2015, 2016, 2017, 2018, 2019  AO Industries, Inc.
+ * Copyright (C) 2014, 2015, 2016, 2017, 2018, 2019, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -536,7 +536,7 @@ public class HtmlRenderer implements Renderer {
 				Page page,
 				HttpServletRequest request,
 				HttpServletResponse response,
-				Writer out
+				Writer out // TODO: Pass "out" to theme.doTheme()?
 			) throws IOException, ServletException, SkipPageException {
 				// Resolve the view
 				SemanticCMS semanticCMS = SemanticCMS.getInstance(servletContext);

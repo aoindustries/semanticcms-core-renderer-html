@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-renderer-html - SemanticCMS pages rendered as HTML in a Servlet environment.
- * Copyright (C) 2013, 2014, 2015, 2016, 2017, 2019  AO Industries, Inc.
+ * Copyright (C) 2013, 2014, 2015, 2016, 2017, 2019, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -28,6 +28,7 @@ import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextIn
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.textInXhtmlAttributeEncoder;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
+import com.aoindustries.html.Html;
 import com.aoindustries.net.DomainName;
 import com.aoindustries.net.Path;
 import com.aoindustries.net.URIEncoder;
@@ -51,7 +52,6 @@ import com.semanticcms.core.pages.local.CurrentCaptureLevel;
 import com.semanticcms.core.pages.local.CurrentNode;
 import com.semanticcms.core.pages.local.CurrentPage;
 import java.io.IOException;
-import java.io.Writer;
 import javax.el.ELContext;
 import javax.el.ValueExpression;
 import javax.servlet.ServletContext;
@@ -196,7 +196,7 @@ final public class LinkRenderer {
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		Writer out,
+		Html html,
 		Link link,
 		LinkRendererBody<E> body
 	) throws E, ServletException, IOException, SkipPageException {
@@ -207,7 +207,7 @@ final public class LinkRenderer {
 				servletContext,
 				request,
 				response,
-				out,
+				html,
 				link.getDomain(),
 				link.getBook(),
 				link.getPagePath(),
@@ -242,7 +242,7 @@ final public class LinkRenderer {
 		ELContext elContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		Writer out,
+		Html html,
 		ValueExpression domain,
 		ValueExpression book,
 		ValueExpression page,
@@ -297,7 +297,7 @@ final public class LinkRenderer {
 				servletContext,
 				request,
 				response,
-				out,
+				html,
 				domainObj,
 				bookPath,
 				pageStr,
@@ -320,7 +320,7 @@ final public class LinkRenderer {
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		Writer out,
+		Html html,
 		DomainName domain,
 		Path book,
 		String page,
@@ -363,7 +363,7 @@ final public class LinkRenderer {
 			element = nullIfEmpty(element);
 			anchor = nullIfEmpty(anchor);
 			if(element != null && anchor != null) {
-				throw new ServletException("May not provide both \"element\" and \"anchor\": element=\"" + element + "\", anchor=\"" + anchor + "\"");
+				throw new ServletException("May not provide both \"element\" and \"anchor\": element=\"" + element + "\", anchor=\"" + anchor + '"');
 			}
 			viewName = nullIfEmpty(viewName);
 			// Evaluate expressions
@@ -420,7 +420,7 @@ final public class LinkRenderer {
 			PageIndex pageIndex = PageIndex.getCurrentPageIndex(request);
 			Integer index = pageIndex==null ? null : pageIndex.getPageIndex(targetPageRef);
 
-			out.write(small ? "<span" : "<a");
+			html.out.write(small ? "<span" : "<a");
 			StringBuilder href = new StringBuilder();
 			if(element == null) {
 				if(anchor == null) {
@@ -490,7 +490,7 @@ final public class LinkRenderer {
 					servletContext,
 					request,
 					response,
-					out,
+					html.out,
 					href.toString(),
 					params,
 					absolute,
@@ -500,51 +500,51 @@ final public class LinkRenderer {
 			}
 			if(clazz != null) {
 				if(!Coercion.isEmpty(clazz)) {
-					out.write(" class=\"");
-					Coercion.write(clazz, textInXhtmlAttributeEncoder, out);
-					out.write("\"");
+					html.out.write(" class=\"");
+					Coercion.write(clazz, textInXhtmlAttributeEncoder, html.out);
+					html.out.write('"');
 				}
 			} else {
 				if(targetElement != null) {
 					String linkCssClass = htmlRenderer.getLinkCssClass(targetElement);
 					if(linkCssClass != null) {
-						out.write(" class=\"");
-						encodeTextInXhtmlAttribute(linkCssClass, out);
-						out.write('"');
+						html.out.write(" class=\"");
+						encodeTextInXhtmlAttribute(linkCssClass, html.out);
+						html.out.write('"');
 					}
 				}
 			}
 			// Add nofollow consistent with view and page settings.
 			// TODO: Nofollow to missing books that cause targetPage to be null here?
 			if(targetPage != null && !view.getAllowRobots(servletContext, request, response, targetPage)) {
-				out.write(" rel=\"nofollow\"");
+				html.out.write(" rel=\"nofollow\"");
 			}
-			out.write('>');
+			html.out.write('>');
 
 			if(body == null) {
 				if(targetElement != null) {
-					targetElement.appendLabel(new MediaWriter(textInXhtmlEncoder, out));
+					targetElement.appendLabel(new MediaWriter(textInXhtmlEncoder, html.out));
 				} else if(targetPage != null) {
-					encodeTextInXhtml(targetPage.getTitle(), out);
+					html.text(targetPage.getTitle());
 				} else {
-					writeBrokenPathInXhtml(targetPageRef, element, out);
+					writeBrokenPathInXhtml(targetPageRef, element, html.out);
 				}
 				if(index != null) {
-					out.write("<sup>[");
-					encodeTextInXhtml(Integer.toString(index+1), out);
-					out.write("]</sup>");
+					html.out.write("<sup>[");
+					html.text(index + 1);
+					html.out.write("]</sup>");
 				}
 			} else {
 				body.doBody(false);
 			}
 			if(small) {
 				// TODO: Support multi-domain
-				out.write("<sup><a");
+				html.out.write("<sup><a");
 				UrlUtils.writeHref(
 					servletContext,
 					request,
 					response,
-					out,
+					html.out,
 					href.toString(),
 					params,
 					absolute,
@@ -553,9 +553,9 @@ final public class LinkRenderer {
 				);
 				// TODO: Make [link] not copied during select/copy/paste, to not corrupt semantic meaning (and make more useful in copy/pasted code and scripts)?
 				// TODO: https://stackoverflow.com/questions/3271231/how-to-exclude-portions-of-text-when-copying
-				out.write(">[link]</a></sup></span>");
+				html.out.write(">[link]</a></sup></span>");
 			} else {
-				out.write("</a>");
+				html.out.write("</a>");
 			}
 		} else {
 			// Invoke body for any meta data, but discard any output

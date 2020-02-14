@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-renderer-html - SemanticCMS pages rendered as HTML in a Servlet environment.
- * Copyright (C) 2013, 2014, 2015, 2016, 2017, 2018  AO Industries, Inc.
+ * Copyright (C) 2013, 2014, 2015, 2016, 2017, 2018, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -22,6 +22,7 @@
  */
 package com.semanticcms.core.renderer.html;
 
+import com.aoindustries.html.servlet.HtmlEE;
 import com.aoindustries.net.DomainName;
 import com.aoindustries.net.Path;
 import com.semanticcms.core.model.Page;
@@ -140,7 +141,7 @@ public class NavigationTree {
 			servletContext,
 			request,
 			response,
-			response.getWriter(),
+			HtmlEE.get(servletContext, request, response.getWriter()),
 			root,
 			skipRoot,
 			yuiConfig,
