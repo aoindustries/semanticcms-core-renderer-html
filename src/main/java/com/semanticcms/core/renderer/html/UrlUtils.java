@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-renderer-html - SemanticCMS pages rendered as HTML in a Servlet environment.
- * Copyright (C) 2013, 2014, 2015, 2016, 2017, 2019  AO Industries, Inc.
+ * Copyright (C) 2013, 2014, 2015, 2016, 2017, 2019, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -25,7 +25,8 @@ package com.semanticcms.core.renderer.html;
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextInXhtmlAttribute;
 import com.aoindustries.net.URIParameters;
 import com.aoindustries.servlet.http.HttpServletUtil;
-import com.aoindustries.servlet.http.LastModifiedServlet;
+import com.aoindustries.servlet.lastmodified.AddLastModified;
+import com.aoindustries.servlet.lastmodified.LastModifiedUtil;
 import java.io.IOException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -42,6 +43,7 @@ final public class UrlUtils {
 	 * Adds contextPath to URLs that begin with a slash (/).
 	 * Encodes the URL.
 	 */
+	// TODO: Still used?
 	public static void writeHref(
 		ServletContext servletContext,
 		HttpServletRequest request,
@@ -49,22 +51,55 @@ final public class UrlUtils {
 		Appendable out,
 		String href,
 		URIParameters params,
+		AddLastModified addLastModified,
 		boolean absolute,
-		boolean canonical,
-		LastModifiedServlet.AddLastModifiedWhen addLastModified
+		boolean canonical
 	) throws ServletException, IOException {
 		if(href != null) {
 			out.append(" href=\"");
 			encodeTextInXhtmlAttribute(
-				HttpServletUtil.buildURL(
+				LastModifiedUtil.buildURL(
 					servletContext,
 					request,
 					response,
 					href,
 					params,
+					addLastModified,
 					absolute,
-					canonical,
-					addLastModified
+					canonical
+				),
+				out
+			);
+			out.append('"');
+		} else {
+			if(params != null) throw new ServletException("parameters provided without href");
+		}
+	}
+
+	/**
+	 * Writes an href attribute with parameters.
+	 * Adds contextPath to URLs that begin with a slash (/).
+	 * Encodes the URL.
+	 */
+	public static void writeHref(
+		HttpServletRequest request,
+		HttpServletResponse response,
+		Appendable out,
+		String href,
+		URIParameters params,
+		boolean absolute,
+		boolean canonical
+	) throws ServletException, IOException {
+		if(href != null) {
+			out.append(" href=\"");
+			encodeTextInXhtmlAttribute(
+				HttpServletUtil.buildURL(
+					request,
+					response,
+					href,
+					params,
+					absolute,
+					canonical
 				),
 				out
 			);
@@ -79,6 +114,7 @@ final public class UrlUtils {
 	 * Adds contextPath to URLs that begin with a slash (/).
 	 * Encodes the URL.
 	 */
+	// TODO: Still used?
 	public static void writeSrc(
 		ServletContext servletContext,
 		HttpServletRequest request,
@@ -86,22 +122,55 @@ final public class UrlUtils {
 		Appendable out,
 		String src,
 		URIParameters params,
+		AddLastModified addLastModified,
 		boolean absolute,
-		boolean canonical,
-		LastModifiedServlet.AddLastModifiedWhen addLastModified
+		boolean canonical
 	) throws ServletException, IOException {
 		if(src != null) {
 			out.append(" src=\"");
 			encodeTextInXhtmlAttribute(
-				HttpServletUtil.buildURL(
+				LastModifiedUtil.buildURL(
 					servletContext,
 					request,
 					response,
 					src,
 					params,
+					addLastModified,
 					absolute,
-					canonical,
-					addLastModified
+					canonical
+				),
+				out
+			);
+			out.append('"');
+		} else {
+			if(params != null) throw new ServletException("parameters provided without src");
+		}
+	}
+
+	/**
+	 * Writes a src attribute with parameters.
+	 * Adds contextPath to URLs that begin with a slash (/).
+	 * Encodes the URL.
+	 */
+	public static void writeSrc(
+		HttpServletRequest request,
+		HttpServletResponse response,
+		Appendable out,
+		String src,
+		URIParameters params,
+		boolean absolute,
+		boolean canonical
+	) throws ServletException, IOException {
+		if(src != null) {
+			out.append(" src=\"");
+			encodeTextInXhtmlAttribute(
+				HttpServletUtil.buildURL(
+					request,
+					response,
+					src,
+					params,
+					absolute,
+					canonical
 				),
 				out
 			);

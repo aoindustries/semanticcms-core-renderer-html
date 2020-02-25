@@ -33,7 +33,6 @@ import com.aoindustries.net.DomainName;
 import com.aoindustries.net.Path;
 import com.aoindustries.net.URIEncoder;
 import com.aoindustries.net.URIParameters;
-import com.aoindustries.servlet.http.LastModifiedServlet;
 import static com.aoindustries.taglib.AttributeUtils.resolveValue;
 import static com.aoindustries.util.StringUtility.nullIfEmpty;
 import com.aoindustries.validation.ValidationException;
@@ -487,15 +486,13 @@ final public class LinkRenderer {
 			}
 			if(!small) {
 				UrlUtils.writeHref(
-					servletContext,
 					request,
 					response,
 					html.out,
 					href.toString(),
 					params,
 					absolute,
-					canonical,
-					LastModifiedServlet.AddLastModifiedWhen.FALSE
+					canonical
 				);
 			}
 			if(clazz != null) {
@@ -541,15 +538,13 @@ final public class LinkRenderer {
 				// TODO: Support multi-domain
 				html.out.write("<sup><a");
 				UrlUtils.writeHref(
-					servletContext,
 					request,
 					response,
 					html.out,
 					href.toString(),
 					params,
 					absolute,
-					canonical,
-					LastModifiedServlet.AddLastModifiedWhen.FALSE
+					canonical
 				);
 				// TODO: Make [link] not copied during select/copy/paste, to not corrupt semantic meaning (and make more useful in copy/pasted code and scripts)?
 				// TODO: https://stackoverflow.com/questions/3271231/how-to-exclude-portions-of-text-when-copying
