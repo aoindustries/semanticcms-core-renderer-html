@@ -43,7 +43,10 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.SkipPageException;
@@ -54,38 +57,55 @@ import javax.servlet.jsp.SkipPageException;
 public class HtmlRenderer implements Renderer {
 
 	// <editor-fold defaultstate="collapsed" desc="Singleton Instance (per application)">
-	static final String ATTRIBUTE_NAME = "htmlRenderer";
 
-	private static class InstanceLock {}
-	private static final InstanceLock instanceLock = new InstanceLock();
+	@WebListener("Registers the HtmlRenderer with SemanticCMS and exposes the HtmlRenderer as an application-scope variable \"" + APPLICATION_ATTRIBUTE + "\".")
+	public static class Initializer implements ServletContextListener {
+
+		private HtmlRenderer instance;
+
+		@Override
+		public void contextInitialized(ServletContextEvent event) {
+			ServletContext servletContext = event.getServletContext();
+			instance = getInstance(servletContext);
+			SemanticCMS.getInstance(servletContext).addRenderer("", instance);
+			// TODO: Register an export version at *.html, which redirects to not .html when not in export mode
+		}
+
+		@Override
+		public void contextDestroyed(ServletContextEvent event) {
+			if(instance != null) {
+				instance.destroy();
+				instance = null;
+			}
+			event.getServletContext().removeAttribute(APPLICATION_ATTRIBUTE);
+		}
+	}
+
+	public static final String APPLICATION_ATTRIBUTE = "htmlRenderer";
 
 	/**
 	 * Gets the {@link HtmlRenderer} instance, creating it if necessary.
 	 */
 	public static HtmlRenderer getInstance(ServletContext servletContext) {
-		synchronized(instanceLock) {
-			HtmlRenderer htmlRenderer = (HtmlRenderer)servletContext.getAttribute(ATTRIBUTE_NAME);
-			if(htmlRenderer == null) {
-				htmlRenderer = new HtmlRenderer(servletContext);
-				servletContext.setAttribute(ATTRIBUTE_NAME, htmlRenderer);
-			}
-			return htmlRenderer;
+		HtmlRenderer htmlRenderer = (HtmlRenderer)servletContext.getAttribute(APPLICATION_ATTRIBUTE);
+		if(htmlRenderer == null) {
+			// TODO: Support custom implementations via context-param?
+			htmlRenderer = new HtmlRenderer(servletContext);
+			servletContext.setAttribute(APPLICATION_ATTRIBUTE, htmlRenderer);
 		}
+		return htmlRenderer;
 	}
 
 	private final ServletContext servletContext;
 
-	private HtmlRenderer(ServletContext servletContext) {
+	protected HtmlRenderer(ServletContext servletContext) {
 		this.servletContext = servletContext;
 	}
 
 	/**
 	 * Called when the context is shutting down.
 	 */
-	void destroy() {
-		synchronized(instanceLock) {
-			servletContext.removeAttribute(ATTRIBUTE_NAME);
-		}
+	protected void destroy() {
 	}
 	// </editor-fold>
 
@@ -596,7 +616,7 @@ public class HtmlRenderer implements Renderer {
 
 			@Override
 			public void close() {
-				// Nothing to do
+				// Do nothing
 			}
 		};
 	}
