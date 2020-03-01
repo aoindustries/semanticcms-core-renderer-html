@@ -22,9 +22,7 @@
  */
 package com.semanticcms.core.renderer.html;
 
-import com.aoindustries.encoding.MediaWriter;
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextInXhtmlAttribute;
-import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.html.Html;
 import com.aoindustries.net.URIEncoder;
 import com.semanticcms.core.controller.CapturePage;
@@ -209,7 +207,7 @@ final public class ElementFilterTree {
 				html.out
 			);
 			html.out.write("\">");
-			node.appendLabel(new MediaWriter(textInXhtmlEncoder, html.out));
+			html.text(node.getLabel());
 			if(index != null) {
 				html.out.write("<sup>[");
 				html.text(index + 1);

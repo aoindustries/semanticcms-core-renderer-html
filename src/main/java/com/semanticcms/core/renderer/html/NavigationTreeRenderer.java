@@ -22,9 +22,7 @@
  */
 package com.semanticcms.core.renderer.html;
 
-import com.aoindustries.encoding.MediaWriter;
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextInXhtmlAttribute;
-import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.html.Html;
 import com.aoindustries.net.DomainName;
 import com.aoindustries.net.Path;
@@ -577,7 +575,7 @@ final public class NavigationTreeRenderer {
 				// Use shortTitle for pages
 				html.text(PageUtils.getShortTitle(parentPageRef, (Page)node));
 			} else {
-				node.appendLabel(new MediaWriter(textInXhtmlEncoder, html.out));
+				html.text(node.getLabel());
 			}
 			if(index != null) {
 				html.out.write("<sup>[");
