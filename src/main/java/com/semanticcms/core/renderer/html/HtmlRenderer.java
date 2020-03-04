@@ -234,71 +234,17 @@ public class HtmlRenderer implements Renderer {
 	}
 	// </editor-fold>
 
-	// <editor-fold defaultstate="collapsed" desc="CSS Links">
-	/**
-	 * The CSS links in the order added.
-	 */
-	private final Set<String> cssLinks = new LinkedHashSet<>();
-
-	/**
-	 * Gets the CSS links, in the order added.
-	 */
-	public Set<String> getCssLinks() {
-		synchronized(cssLinks) {
-			// Not returning a copy since CSS links are normally only registered on app start-up.
-			return Collections.unmodifiableSet(cssLinks);
-		}
-	}
-
-	/**
-	 * Registers a new CSS link.
-	 *
-	 * @throws  IllegalStateException  if the link is already registered.
-	 */
-	public void addCssLink(String cssLink) throws IllegalStateException {
-		synchronized(cssLinks) {
-			if(!cssLinks.add(cssLink)) throw new IllegalStateException("CSS link already registered: " + cssLink);
-		}
-	}
-	// </editor-fold>
-
-	// <editor-fold defaultstate="collapsed" desc="Print CSS Links">
-	/**
-	 * The print CSS links in the order added.
-	 */
-	private final Set<String> printCssLinks = new LinkedHashSet<>();
-
-	/**
-	 * Gets the print CSS links, in the order added.
-	 */
-	public Set<String> getPrintCssLinks() {
-		synchronized(printCssLinks) {
-			// Not returning a copy since CSS links are normally only registered on app start-up.
-			return Collections.unmodifiableSet(printCssLinks);
-		}
-	}
-
-	/**
-	 * Registers a new print CSS link.
-	 *
-	 * @throws  IllegalStateException  if the link is already registered.
-	 */
-	public void addPrintCssLink(String printCssLink) throws IllegalStateException {
-		synchronized(printCssLinks) {
-			if(!printCssLinks.add(printCssLink)) throw new IllegalStateException("Print CSS link already registered: " + printCssLink);
-		}
-	}
-	// </editor-fold>
-
 	// <editor-fold defaultstate="collapsed" desc="Scripts">
 	/**
 	 * The scripts in the order added.
 	 */
+	// TODO: RegistryEE
 	private final Map<String,String> scripts = new LinkedHashMap<>();
 
 	/**
 	 * Gets the scripts, in the order added.
 	 */
+	// TODO: RegistryEE
 	public Map<String,String> getScripts() {
 		synchronized(scripts) {
 			// Not returning a copy since scripts are normally only registered on app start-up.
@@ -316,6 +262,7 @@ public class HtmlRenderer implements Renderer {
 	 *
 	 * @throws  IllegalStateException  if the script already registered but with a different src.
 	 */
+	// TODO: RegistryEE
 	public void addScript(String name, String src) throws IllegalStateException {
 		synchronized(scripts) {
 			String existingSrc = scripts.get(name);

@@ -349,6 +349,7 @@ abstract public class View implements Comparable<View> {
 	 * Gets an optional set of additional links to include for this view
 	 * in the order they should be added.
 	 */
+	// TODO: RegistryEE
 	public Collection<com.aoindustries.taglib.Link> getLinks(
 		ServletContext servletContext,
 		HttpServletRequest request,
