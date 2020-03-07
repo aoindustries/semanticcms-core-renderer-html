@@ -24,10 +24,14 @@ package com.semanticcms.core.renderer.html;
 
 import com.aoindustries.encoding.Doctype;
 import com.aoindustries.encoding.Serialization;
+import com.aoindustries.encoding.servlet.DoctypeEE;
+import com.aoindustries.encoding.servlet.SerializationEE;
+import com.aoindustries.web.resources.registry.Registry;
 import com.semanticcms.core.model.Page;
 import java.io.IOException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.SkipPageException;
@@ -36,6 +40,25 @@ import javax.servlet.jsp.SkipPageException;
  * A theme is responsible for the overall view of the site.
  */
 abstract public class Theme {
+
+	/**
+	 * The request-scope attribute that will store the currently active theme.
+	 */
+	private static final String REQUEST_ATTRIBUTE = Theme.class.getName();
+
+	/**
+	 * Gets the current theme on the given request or {@code null} when none active.
+	 */
+	public static Theme getTheme(ServletRequest request) {
+		return (Theme)request.getAttribute(REQUEST_ATTRIBUTE);
+	}
+
+	/**
+	 * Sets the current theme on the given request or {@code null} for none active.
+	 */
+	public static void setTheme(ServletRequest request, Theme theme) {
+		request.setAttribute(REQUEST_ATTRIBUTE, theme);
+	}
 
 	/**
 	 * Two themes with the same name are considered equal.
@@ -81,14 +104,24 @@ abstract public class Theme {
 	}
 
 	/**
+	 * Configures the {@linkplain com.aoindustries.web.resources.servlet.RegistryEE.Request request-scope web resources} that this theme uses.
+	 * <p>
+	 * Implementers should call <code>super.configureResources(…)</code> as a matter of convention, despite this default implementation doing nothing.
+	 * </p>
+	 */
+	public void configureResources(ServletContext servletContext, HttpServletRequest req, HttpServletResponse resp, View view, Page page, Registry requestRegistry) {
+		// Do nothing
+	}
+
+	/**
 	 * Renders the theme.
 	 * <p>
 	 * Both the {@link Serialization} and {@link Doctype} may have been set
 	 * on the request, and these must be considered in the HTML generation.
 	 * </p>
 	 *
-	 * @see com.aoindustries.encoding.servlet.SerializationEE#get(javax.servlet.ServletContext, javax.servlet.http.HttpServletRequest)
-	 * @see com.aoindustries.encoding.servlet.DoctypeEE#get(javax.servlet.ServletContext, javax.servlet.ServletRequest)
+	 * @see SerializationEE#get(javax.servlet.ServletContext, javax.servlet.http.HttpServletRequest)
+	 * @see DoctypeEE#get(javax.servlet.ServletContext, javax.servlet.ServletRequest)
 	 *
 	 * TODO: Is SkipPageException acceptable at the view rendering stage?
 	 */

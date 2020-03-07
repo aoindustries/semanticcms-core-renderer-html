@@ -25,6 +25,7 @@ package com.semanticcms.core.renderer.html;
 import com.aoindustries.html.Html;
 import com.aoindustries.net.URIEncoder;
 import com.aoindustries.servlet.http.Canonical;
+import com.aoindustries.web.resources.registry.Registry;
 import com.semanticcms.core.controller.AuthorUtils;
 import com.semanticcms.core.controller.Book;
 import com.semanticcms.core.controller.BookUtils;
@@ -159,10 +160,11 @@ abstract public class View implements Comparable<View> {
 	 * Checks if a view is applicable the given request and page.
 	 * For correct determination, the page must have been captured at {@link CaptureLevel#META}
 	 * level or higher.
-	 *
+	 * <p>
 	 * TODO: Store the captureLevel in effect when a page is captured, and confirm that here and other places where
 	 *       certain capture levels are required for correct behavior.  Could also automatically re-capture at a higher level
 	 *       instead of throwing an exception.
+	 * </p>
 	 * <p>
 	 * <b>Implementation Note:</b><br />
 	 * returns {@code true} by default
@@ -346,14 +348,30 @@ abstract public class View implements Comparable<View> {
 	abstract public String getKeywords(Page page);
 
 	/**
+	 * Configures the {@linkplain com.aoindustries.web.resources.servlet.RegistryEE.Request request-scope web resources} that this view uses.
+	 * <p>
+	 * Implementers should call <code>super.configureResources(…)</code> as a matter of convention, despite this default implementation doing nothing.
+	 * </p>
+	 */
+	public void configureResources(ServletContext servletContext, HttpServletRequest req, HttpServletResponse resp, Theme theme, Page page, Registry requestRegistry) {
+		// Do nothing
+	}
+
+	/**
 	 * Gets an optional set of additional links to include for this view
 	 * in the order they should be added.
+	 * <p>
+	 * Please note, that any links to stylesheets here are never optimized.  Please
+	 * prefer {@link #configureResources(javax.servlet.ServletContext, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, com.semanticcms.core.renderer.html.Theme, com.semanticcms.core.model.Page, com.aoindustries.web.resources.registry.Registry)}.
+	 * </p>
+	 *
+	 * @see  #configureResources(javax.servlet.ServletContext, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, com.semanticcms.core.renderer.html.Theme, com.semanticcms.core.model.Page, com.aoindustries.web.resources.registry.Registry)
 	 */
-	// TODO: RegistryEE
 	public Collection<com.aoindustries.taglib.Link> getLinks(
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
+		// TODO: Theme here, too?
 		Page page
 	) throws ServletException, IOException {
 		return Collections.emptySet();
