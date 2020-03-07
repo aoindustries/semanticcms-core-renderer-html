@@ -79,6 +79,8 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 								<link>https://aoindustries.com/ao-servlet-last-modified/apidocs/</link>
 								<link>https://aoindustries.com/ao-servlet-util/apidocs/</link>
 								<link>https://aoindustries.com/ao-taglib/apidocs/</link>
+								<link>https://aoindustries.com/ao-web-resources/registry/apidocs/</link>
+								<link>https://aoindustries.com/ao-web-resources/servlet/apidocs/</link>
 								<link>https://www.joda.org/joda-time/apidocs/</link>
 								<link>https://semanticcms.com/core/controller/apidocs/</link>
 								<link>https://semanticcms.com/core/model/apidocs/</link>
@@ -133,6 +135,12 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 			</dependency>
 			<dependency>
 				<groupId>com.aoindustries</groupId><artifactId>ao-taglib</artifactId><version>5.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
+			</dependency>
+			<dependency>
+				<groupId>com.aoindustries</groupId><artifactId>ao-web-resources-registry</artifactId><version>0.1.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
+			</dependency>
+			<dependency>
+				<groupId>com.aoindustries</groupId><artifactId>ao-web-resources-servlet</artifactId><version>0.1.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
 			</dependency>
 			<dependency>
 				<groupId>joda-time</groupId><artifactId>joda-time</artifactId><version>2.10.4</version>
@@ -196,6 +204,12 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 		</dependency>
 		<dependency>
 			<groupId>com.aoindustries</groupId><artifactId>ao-taglib</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.aoindustries</groupId><artifactId>ao-web-resources-registry</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.aoindustries</groupId><artifactId>ao-web-resources-servlet</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>joda-time</groupId><artifactId>joda-time</artifactId>

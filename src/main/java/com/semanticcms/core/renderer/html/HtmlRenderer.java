@@ -23,6 +23,7 @@
 package com.semanticcms.core.renderer.html;
 
 import com.aoindustries.encoding.MediaType;
+import com.aoindustries.web.resources.servlet.RegistryEE;
 import com.semanticcms.core.controller.SemanticCMS;
 import com.semanticcms.core.model.Link;
 import com.semanticcms.core.model.Page;
@@ -380,6 +381,7 @@ public class HtmlRenderer implements Renderer {
 	 *
 	 * @throws  IllegalStateException  if the element type is already registered.
 	 */
+	// TODO: Take a set of Group.Name activations, too
 	public <E extends com.semanticcms.core.model.Element> void addLinkCssClass(
 		Class<E> elementType,
 		final String cssLinkClass
@@ -457,6 +459,7 @@ public class HtmlRenderer implements Renderer {
 	 *
 	 * @throws  IllegalStateException  if the node type is already registered.
 	 */
+	// TODO: Take a set of Group.Name activations, too
 	public <N extends com.semanticcms.core.model.Node> void addListItemCssClass(
 		Class<N> nodeType,
 		final String listItemCssClass
@@ -506,7 +509,6 @@ public class HtmlRenderer implements Renderer {
 				Writer out // TODO: Pass "out" to theme.doTheme()?
 			) throws IOException, ServletException, SkipPageException {
 				// Resolve the view
-				SemanticCMS semanticCMS = SemanticCMS.getInstance(servletContext);
 				HtmlRenderer htmlRenderer = HtmlRenderer.getInstance(servletContext);
 				View view;
 				{
@@ -557,8 +559,37 @@ public class HtmlRenderer implements Renderer {
 				// TODO:     We don't want the model picking-up any servlet-specific things, since we may want other non-servlet environments, too, like Play Framework
 				// TODO: ServletUtil.setContentType(response, serialization.getContentType(), Html.ENCODING.name());
 
-				// Forward to theme
-				theme.doTheme(servletContext, request, response, view, page);
+				Theme oldTheme = Theme.getTheme(request);
+				try {
+					Theme.setTheme(request, theme);
+
+					// Configure the theme resources
+					theme.configureResources(
+						servletContext,
+						request,
+						response,
+						view,
+						page,
+						RegistryEE.Request.get(servletContext, request)
+					);
+
+					// Configure the view resources
+					view.configureResources(
+						servletContext,
+						request,
+						response,
+						theme,
+						page,
+						RegistryEE.Request.get(servletContext, request)
+					);
+
+					// TODO: Configure the page resources here or within view?
+
+					// Forward to theme
+					theme.doTheme(servletContext, request, response, view, page);
+				} finally {
+					Theme.setTheme(request, oldTheme);
+				}
 			}
 
 			@Override
