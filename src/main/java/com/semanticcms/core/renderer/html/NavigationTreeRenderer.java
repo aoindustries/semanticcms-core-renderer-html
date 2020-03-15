@@ -29,8 +29,8 @@ import com.aoindustries.net.Path;
 import com.aoindustries.net.URIDecoder;
 import com.aoindustries.net.URIEncoder;
 import static com.aoindustries.taglib.AttributeUtils.resolveValue;
-import com.aoindustries.util.StringUtility;
-import static com.aoindustries.util.StringUtility.nullIfEmpty;
+import com.aoindustries.lang.Strings;
+import static com.aoindustries.lang.Strings.nullIfEmpty;
 import com.aoindustries.validation.ValidationException;
 import com.semanticcms.core.controller.CapturePage;
 import com.semanticcms.core.controller.PageRefResolver;
@@ -181,7 +181,7 @@ final public class NavigationTreeRenderer {
 
 	public static String encodeHexData(String data) {
 		// Note: This is always UTF-8 encoded and does not depend on response encoding
-		return StringUtility.convertToHex(data.getBytes(StandardCharsets.UTF_8));
+		return Strings.convertToHex(data.getBytes(StandardCharsets.UTF_8));
 	}
 
 	public static void writeNavigationTree(
@@ -277,18 +277,18 @@ final public class NavigationTreeRenderer {
 						)
 					),
 					Path.valueOf(
-						StringUtility.nullIfEmpty(
+						Strings.nullIfEmpty(
 							resolveValue(thisBook, String.class, elContext)
 						)
 					),
 					resolveValue(thisPage,   String.class, elContext),
 					DomainName.valueOf(
-						StringUtility.nullIfEmpty(
+						Strings.nullIfEmpty(
 							resolveValue(linksToDomain, String.class, elContext)
 						)
 					),
 					Path.valueOf(
-						StringUtility.nullIfEmpty(
+						Strings.nullIfEmpty(
 							resolveValue(linksToBook,   String.class, elContext)
 						)
 					),

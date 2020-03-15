@@ -32,7 +32,7 @@ import com.aoindustries.net.Path;
 import com.aoindustries.net.URIEncoder;
 import com.aoindustries.net.URIParameters;
 import static com.aoindustries.taglib.AttributeUtils.resolveValue;
-import static com.aoindustries.util.StringUtility.nullIfEmpty;
+import static com.aoindustries.lang.Strings.nullIfEmpty;
 import com.aoindustries.validation.ValidationException;
 import com.semanticcms.core.controller.Book;
 import com.semanticcms.core.controller.CapturePage;
