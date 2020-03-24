@@ -30,7 +30,7 @@
 * [Project Home](https://semanticcms.com/core/renderer/html/)
 * [Changelog](https://semanticcms.com/core/renderer/html/changelog)
 * [API Docs](https://semanticcms.com/core/renderer/html/apidocs/)
-* [Maven Central Repository](https://search.maven.org/#search%7Cgav%7C1%7Cg:%22com.semanticcms%22%20AND%20a:%22semanticcms-core-renderer-html%22)
+* [Maven Central Repository](https://search.maven.org/artifact/com.semanticcms/semanticcms-core-renderer-html)
 * [GitHub](https://github.com/aoindustries/semanticcms-core-renderer-html)
 
 ## Contact Us
