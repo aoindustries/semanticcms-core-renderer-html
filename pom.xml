@@ -90,7 +90,7 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 							</links>
 							<additionalDependencies>
 								<additionalDependency>
-									<groupId>com.aoindustries</groupId><artifactId>ao-encoding-servlet</artifactId><version>3.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
+									<groupId>com.aoindustries</groupId><artifactId>ao-encoding-servlet</artifactId><version>3.0.0${POST-SNAPSHOT}</version>
 								</additionalDependency>
 							</additionalDependencies>
 						</configuration>
