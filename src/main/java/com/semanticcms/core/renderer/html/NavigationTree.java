@@ -141,7 +141,7 @@ public class NavigationTree {
 			servletContext,
 			request,
 			response,
-			HtmlEE.get(servletContext, request, response.getWriter()),
+			HtmlEE.get(servletContext, request, response),
 			root,
 			skipRoot,
 			yuiConfig,
