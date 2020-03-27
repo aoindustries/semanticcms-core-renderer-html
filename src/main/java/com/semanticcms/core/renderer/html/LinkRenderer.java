@@ -27,12 +27,13 @@ import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextIn
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.textInXhtmlAttributeEncoder;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import com.aoindustries.html.Html;
+import static com.aoindustries.lang.Strings.nullIfEmpty;
 import com.aoindustries.net.DomainName;
 import com.aoindustries.net.Path;
 import com.aoindustries.net.URIEncoder;
 import com.aoindustries.net.URIParameters;
+import com.aoindustries.servlet.http.HttpServletUtil;
 import static com.aoindustries.taglib.AttributeUtils.resolveValue;
-import static com.aoindustries.lang.Strings.nullIfEmpty;
 import com.aoindustries.validation.ValidationException;
 import com.semanticcms.core.controller.Book;
 import com.semanticcms.core.controller.CapturePage;
@@ -187,6 +188,39 @@ final public class LinkRenderer {
 		encodeTextInXhtmlAttribute(bookRef.getPrefix(), out);
 		encodeTextInXhtmlAttribute(pageRef.getPath().toString(), out);
 		out.append('?');
+	}
+
+	/**
+	 * Writes an href attribute with parameters.
+	 * Adds contextPath to URLs that begin with a slash (/).
+	 * Encodes the URL.
+	 */
+	public static void writeHref(
+		HttpServletRequest request,
+		HttpServletResponse response,
+		Appendable out,
+		String href,
+		URIParameters params,
+		boolean absolute,
+		boolean canonical
+	) throws ServletException, IOException {
+		if(href != null) {
+			out.append(" href=\"");
+			encodeTextInXhtmlAttribute(
+				HttpServletUtil.buildURL(
+					request,
+					response,
+					href,
+					params,
+					absolute,
+					canonical
+				),
+				out
+			);
+			out.append('"');
+		} else {
+			if(params != null) throw new ServletException("parameters provided without href");
+		}
 	}
 
 	public static <E extends Throwable> void writeLinkImpl(
@@ -483,7 +517,7 @@ final public class LinkRenderer {
 				}
 			}
 			if(!small) {
-				UrlUtils.writeHref(
+				writeHref(
 					request,
 					response,
 					html.out,
@@ -535,7 +569,7 @@ final public class LinkRenderer {
 			if(small) {
 				// TODO: Support multi-domain
 				html.out.write("<sup><a");
-				UrlUtils.writeHref(
+				writeHref(
 					request,
 					response,
 					html.out,
