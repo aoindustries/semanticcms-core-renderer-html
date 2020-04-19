@@ -33,12 +33,12 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 	<packaging>bundle</packaging>
 
 	<properties>
-		<javadoc.breadcrumbs><![CDATA[<a target="_top" href="https://semanticcms.com/">SemanticCMS</a>
-/ <a target="_top" href="https://semanticcms.com/core/">Core</a>
-/ <a target="_top" href="https://semanticcms.com/core/renderer/">Renderer</a>
-/ <a target="_top" href="${project.url}">${shortTitle}</a>]]></javadoc.breadcrumbs>
+		<javadoc.breadcrumbs><![CDATA[<a target="${javadoc.target}" href="https://semanticcms.com/">SemanticCMS</a>
+/ <a target="${javadoc.target}" href="https://semanticcms.com/core/">Core</a>
+/ <a target="${javadoc.target}" href="https://semanticcms.com/core/renderer/">Renderer</a>
+/ <a target="${javadoc.target}" href="${project.url}">${shortTitle}</a>]]></javadoc.breadcrumbs>
 		<shortTitle>HTML</shortTitle>
-		<description.html><![CDATA[<a target="_top" href="https://semanticcms.com/core/pages/">SemanticCMS pages</a> rendered as HTML in a Servlet environment.]]></description.html>
+		<description.html><![CDATA[<a target="${javadoc.target}" href="https://semanticcms.com/core/pages/">SemanticCMS pages</a> rendered as HTML in a Servlet environment.]]></description.html>
 	</properties>
 
 	<name>SemanticCMS Core Renderer HTML²</name>
