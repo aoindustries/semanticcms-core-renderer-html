@@ -82,12 +82,12 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 								<link>https://aoindustries.com/ao-web-resources/registry/apidocs/</link>
 								<link>https://aoindustries.com/ao-web-resources/servlet/apidocs/</link>
 								<link>https://www.joda.org/joda-time/apidocs/</link>
-								<link>https://semanticcms.com/core/controller/apidocs/</link>
+								<!-- TODO: Once published: <link>https://semanticcms.com/core/controller/apidocs/</link> -->
 								<link>https://semanticcms.com/core/model/apidocs/</link>
-								<link>https://semanticcms.com/core/pages/apidocs/</link>
-								<link>https://semanticcms.com/core/pages/local/apidocs/</link>
-								<link>https://semanticcms.com/core/renderer/apidocs/</link>
-								<link>https://semanticcms.com/core/renderer/servlet/apidocs/</link>
+								<!-- TODO: Once published: <link>https://semanticcms.com/core/pages/apidocs/</link> -->
+								<!-- TODO: Once published: <link>https://semanticcms.com/core/pages/local/apidocs/</link> -->
+								<!-- TODO: Once published: <link>https://semanticcms.com/core/renderer/apidocs/</link> -->
+								<!-- TODO: Once published: <link>https://semanticcms.com/core/renderer/servlet/apidocs/</link> -->
 								<!-- additionalDependencies -->
 								<link>https://aoindustries.com/ao-encoding/servlet/apidocs/</link>
 							</links>
