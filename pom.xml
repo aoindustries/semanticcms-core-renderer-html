@@ -65,13 +65,32 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId><artifactId>maven-dependency-plugin</artifactId>
+						<dependencies>
+							<dependency>
+								<groupId>com.aoindustries</groupId><artifactId>ao-javadoc-offline</artifactId><version>1.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
+							</dependency>
+							<!-- Javadoc-only -->
+							<dependency>
+								<groupId>com.aoindustries</groupId><artifactId>ao-encoding-servlet</artifactId><version>3.0.0${POST-SNAPSHOT}</version>
+							</dependency>
+						</dependencies>
 						<executions>
 							<execution>
-								<id>unpack.offlinkLinks</id>
-								<phase>generate-sources</phase>
-								<goals><goal>unpack</goal></goals>
+								<id>unpack.offlinkLinks</id><phase>generate-sources</phase><goals><goal>unpack</goal></goals>
 								<configuration>
+									<silent>true</silent>
 									<artifactItems>
+										<artifactItem>
+											<groupId>com.aoindustries</groupId><artifactId>ao-javadoc-offline</artifactId><version>1.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
+											<includes>**/element-list, **/package-list</includes>
+											<outputDirectory>${project.build.directory}/offlineLinks</outputDirectory>
+										</artifactItem>
+										<!-- Javadoc-only -->
+										<artifactItem>
+											<groupId>com.aoindustries</groupId><artifactId>ao-encoding-servlet</artifactId><version>3.0.0${POST-SNAPSHOT}</version>
+											<classifier>javadoc</classifier><includes>element-list, package-list</includes>
+											<outputDirectory>${project.build.directory}/offlineLinks/com.aoindustries/ao-encoding-servlet</outputDirectory>
+										</artifactItem>
 										<!-- Direct -->
 										<artifactItem>
 											<groupId>com.aoindustries</groupId><artifactId>ao-collections</artifactId>
@@ -158,12 +177,6 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 											<classifier>javadoc</classifier><includes>element-list, package-list</includes>
 											<outputDirectory>${project.build.directory}/offlineLinks/com.semanticcms/semanticcms-core-renderer-servlet</outputDirectory>
 										</artifactItem>
-										<!-- Javadoc-only -->
-										<artifactItem>
-											<groupId>com.aoindustries</groupId><artifactId>ao-encoding-servlet</artifactId><version>3.0.0${POST-SNAPSHOT}</version>
-											<classifier>javadoc</classifier><includes>element-list, package-list</includes>
-											<outputDirectory>${project.build.directory}/offlineLinks/com.aoindustries/ao-encoding-servlet</outputDirectory>
-										</artifactItem>
 									</artifactItems>
 								</configuration>
 							</execution>
@@ -172,32 +185,27 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId><artifactId>maven-javadoc-plugin</artifactId>
 						<configuration>
-							<links>
-								<link>${javadoc.link.javase}</link>
-								<!-- Java EE -->
-								<link>${javadoc.link.javaee}</link>
-								<!-- Direct -->
-								<!-- offlineLink: <groupId>com.aoindustries</groupId><artifactId>ao-collections</artifactId> -->
-								<!-- offlineLink: <groupId>com.aoindustries</groupId><artifactId>ao-encoding</artifactId> -->
-								<!-- offlineLink: <groupId>com.aoindustries</groupId><artifactId>ao-fluent-html</artifactId> -->
-								<!-- offlineLink: <groupId>com.aoindustries</groupId><artifactId>ao-fluent-html-servlet</artifactId> -->
-								<!-- offlineLink: <groupId>com.aoindustries</groupId><artifactId>ao-lang</artifactId> -->
-								<!-- offlineLink: <groupId>com.aoindustries</groupId><artifactId>ao-net-types</artifactId> -->
-								<!-- offlineLink: <groupId>com.aoindustries</groupId><artifactId>ao-servlet-util</artifactId> -->
-								<!-- offlineLink: <groupId>com.aoindustries</groupId><artifactId>ao-taglib</artifactId> -->
-								<!-- offlineLink: <groupId>com.aoindustries</groupId><artifactId>ao-web-resources-registry</artifactId> -->
-								<!-- offlineLink: <groupId>com.aoindustries</groupId><artifactId>ao-web-resources-servlet</artifactId> -->
-								<!-- offlineLink: <groupId>joda-time</groupId><artifactId>joda-time</artifactId> -->
-								<!-- offlineLink: <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-controller</artifactId> -->
-								<!-- offlineLink: <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-model</artifactId> -->
-								<!-- offlineLink: <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-pages</artifactId> -->
-								<!-- offlineLink: <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-pages-local</artifactId> -->
-								<!-- offlineLink: <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-renderer</artifactId> -->
-								<!-- offlineLink: <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-renderer-servlet</artifactId> -->
+							<additionalDependencies>
 								<!-- Javadoc-only -->
-								<!-- offlineLink: <groupId>com.aoindustries</groupId><artifactId>ao-encoding-servlet</artifactId> -->
-							</links>
+								<additionalDependency>
+									<groupId>com.aoindustries</groupId><artifactId>ao-encoding-servlet</artifactId><version>3.0.0${POST-SNAPSHOT}</version>
+								</additionalDependency>
+							</additionalDependencies>
 							<offlineLinks>
+								<offlineLink>
+									<url>${javadoc.link.javase}</url>
+									<location>${project.build.directory}/offlineLinks/com/aoindustries/javadoc/offline/javase/${javase.release}</location>
+								</offlineLink>
+								<!-- Java EE -->
+								<offlineLink>
+									<url>${javadoc.link.javaee}</url>
+									<location>${project.build.directory}/offlineLinks/com/aoindustries/javadoc/offline/javaee/${javaee.version}</location>
+								</offlineLink>
+								<!-- Javadoc-only -->
+								<offlineLink>
+									<url>https://aoindustries.com/ao-encoding/servlet/apidocs/</url>
+									<location>${project.build.directory}/offlineLinks/com.aoindustries/ao-encoding-servlet</location>
+								</offlineLink>
 								<!-- Direct -->
 								<offlineLink>
 									<url>https://aoindustries.com/ao-collections/apidocs/</url>
@@ -267,17 +275,7 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 									<url>https://semanticcms.com/core/renderer/servlet/apidocs/</url>
 									<location>${project.build.directory}/offlineLinks/com.semanticcms/semanticcms-core-renderer-servlet</location>
 								</offlineLink>
-								<!-- Javadoc-only -->
-								<offlineLink>
-									<url>https://aoindustries.com/ao-encoding/servlet/apidocs/</url>
-									<location>${project.build.directory}/offlineLinks/com.aoindustries/ao-encoding-servlet</location>
-								</offlineLink>
 							</offlineLinks>
-							<additionalDependencies>
-								<additionalDependency>
-									<groupId>com.aoindustries</groupId><artifactId>ao-encoding-servlet</artifactId><version>3.0.0${POST-SNAPSHOT}</version>
-								</additionalDependency>
-							</additionalDependencies>
 						</configuration>
 					</plugin>
 				</plugins>
