@@ -24,13 +24,13 @@ package com.semanticcms.core.renderer.html;
 
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextInXhtmlAttribute;
 import com.aoindustries.html.Html;
+import com.aoindustries.lang.Strings;
+import static com.aoindustries.lang.Strings.nullIfEmpty;
 import com.aoindustries.net.DomainName;
 import com.aoindustries.net.Path;
 import com.aoindustries.net.URIDecoder;
 import com.aoindustries.net.URIEncoder;
 import static com.aoindustries.taglib.AttributeUtils.resolveValue;
-import com.aoindustries.lang.Strings;
-import static com.aoindustries.lang.Strings.nullIfEmpty;
 import com.aoindustries.validation.ValidationException;
 import com.semanticcms.core.controller.CapturePage;
 import com.semanticcms.core.controller.PageRefResolver;

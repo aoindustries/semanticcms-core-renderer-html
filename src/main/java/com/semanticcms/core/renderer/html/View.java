@@ -353,6 +353,7 @@ abstract public class View implements Comparable<View> {
 	 * Implementers should call <code>super.configureResources(…)</code> as a matter of convention, despite this default implementation doing nothing.
 	 * </p>
 	 */
+	@SuppressWarnings("NoopMethodInAbstractClass")
 	public void configureResources(ServletContext servletContext, HttpServletRequest req, HttpServletResponse resp, Theme theme, Page page, Registry requestRegistry) {
 		// Do nothing
 	}

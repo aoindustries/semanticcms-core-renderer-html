@@ -279,10 +279,12 @@ public class PageIndex {
 		return rootPage;
 	}
 
+	@SuppressWarnings("ReturnOfCollectionOrArrayField") // Returning unmodifiable
 	public List<Page> getPageList() {
 		return pageList;
 	}
 
+	@SuppressWarnings("ReturnOfCollectionOrArrayField") // Returning unmodifiable
 	public Map<PageRef,Integer> getPageIndexes() {
 		return pageIndexes;
 	}
