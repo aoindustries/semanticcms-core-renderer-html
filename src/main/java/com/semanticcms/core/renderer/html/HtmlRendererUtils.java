@@ -29,7 +29,6 @@ import com.semanticcms.core.model.Page;
 import com.semanticcms.core.pages.CaptureLevel;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -61,7 +60,7 @@ final public class HtmlRendererUtils {
 			PageUtils.filterNotMissingBook(servletContext, page.getParentRefs()),
 			CaptureLevel.META // TODO: View provide capture level required for isApplicable check, might be PAGE or (null for none) for some views.
 		).values();
-		Set<Page> applicableParents = new LinkedHashSet<>(parents.size() *4/3+1);
+		Set<Page> applicableParents = AoCollections.newLinkedHashSet(parents.size());
 		for(Page parent : parents) {
 			if(view.isApplicable(servletContext, request, response, parent)) {
 				applicableParents.add(parent);
