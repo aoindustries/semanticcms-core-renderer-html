@@ -23,7 +23,7 @@
 package com.semanticcms.core.renderer.html;
 
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextInXhtmlAttribute;
-import com.aoindustries.html.Html;
+import com.aoindustries.html.Document;
 import com.aoindustries.lang.Strings;
 import static com.aoindustries.lang.Strings.nullIfEmpty;
 import com.aoindustries.net.DomainName;
@@ -189,7 +189,7 @@ final public class NavigationTreeRenderer {
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		Html html,
+		Document document,
 		Page root,
 		boolean skipRoot,
 		boolean yuiConfig,
@@ -212,7 +212,7 @@ final public class NavigationTreeRenderer {
 				servletContext,
 				request,
 				response,
-				html,
+				document,
 				root,
 				skipRoot,
 				yuiConfig,
@@ -244,7 +244,7 @@ final public class NavigationTreeRenderer {
 		ELContext elContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		Html html,
+		Document document,
 		ValueExpression root,
 		boolean skipRoot,
 		boolean yuiConfig,
@@ -266,7 +266,7 @@ final public class NavigationTreeRenderer {
 					servletContext,
 					request,
 					response,
-					html,
+					document,
 					resolveValue(root, Page.class, elContext),
 					skipRoot,
 					yuiConfig,
@@ -307,7 +307,7 @@ final public class NavigationTreeRenderer {
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		Html html,
+		Document document,
 		Page root,
 		boolean skipRoot,
 		boolean yuiConfig,
@@ -382,13 +382,13 @@ final public class NavigationTreeRenderer {
 				childNodes = NavigationTreeRenderer.filterNodes(childNodes, nodesWithChildLinks);
 			}
 			if(!childNodes.isEmpty()) {
-				if(captureLevel == CaptureLevel.BODY) html.out.write("<ul>\n");
+				if(captureLevel == CaptureLevel.BODY) document.out.write("<ul>\n");
 				for(Node childNode : childNodes) {
 					foundThisPage = writeNode(
 						servletContext,
 						request,
 						response,
-						captureLevel == CaptureLevel.BODY ? html : null,
+						captureLevel == CaptureLevel.BODY ? document : null,
 						currentNode,
 						nodesWithLinks,
 						nodesWithChildLinks,
@@ -404,15 +404,15 @@ final public class NavigationTreeRenderer {
 						1
 					);
 				}
-				if(captureLevel == CaptureLevel.BODY) html.out.write("</ul>\n");
+				if(captureLevel == CaptureLevel.BODY) document.out.write("</ul>\n");
 			}
 		} else {
-			if(captureLevel == CaptureLevel.BODY) html.out.write("<ul>\n");
+			if(captureLevel == CaptureLevel.BODY) document.out.write("<ul>\n");
 			/*foundThisPage =*/ writeNode(
 				servletContext,
 				request,
 				response,
-				captureLevel == CaptureLevel.BODY ? html : null,
+				captureLevel == CaptureLevel.BODY ? document : null,
 				currentNode,
 				nodesWithLinks,
 				nodesWithChildLinks,
@@ -427,7 +427,7 @@ final public class NavigationTreeRenderer {
 				maxDepth,
 				1
 			);
-			if(captureLevel == CaptureLevel.BODY) html.out.write("</ul>\n");
+			if(captureLevel == CaptureLevel.BODY) document.out.write("</ul>\n");
 		}
 	}
 
@@ -435,7 +435,7 @@ final public class NavigationTreeRenderer {
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		Html html,
+		Document document,
 		Node currentNode,
 		Set<Node> nodesWithLinks,
 		Set<Node> nodesWithChildLinks,
@@ -469,7 +469,7 @@ final public class NavigationTreeRenderer {
 			currentNode.addPageLink(pageRef);
 		}
 		final String servletPath;
-		if(html == null) {
+		if(document == null) {
 			// Will be unused
 			servletPath = null;
 		} else {
@@ -496,61 +496,61 @@ final public class NavigationTreeRenderer {
 				servletPath = sb.toString();
 			}
 		}
-		if(html != null) {
-			html.out.write("<li");
+		if(document != null) {
+			document.out.write("<li");
 			if(yuiConfig) {
-				html.out.write(" yuiConfig='{\"data\":\"");
-				encodeTextInXhtmlAttribute(encodeHexData(servletPath), html.out);
-				html.out.write("\"}'");
+				document.out.write(" yuiConfig='{\"data\":\"");
+				encodeTextInXhtmlAttribute(encodeHexData(servletPath), document.out);
+				document.out.write("\"}'");
 			}
 			String listItemCssClass = HtmlRenderer.getInstance(servletContext).getListItemCssClass(node);
 			if(listItemCssClass != null || level == 1) {
-				html.out.write(" class=\"");
+				document.out.write(" class=\"");
 				boolean didClass = false;
 				if(listItemCssClass != null) {
-					encodeTextInXhtmlAttribute(listItemCssClass, html.out);
+					encodeTextInXhtmlAttribute(listItemCssClass, document.out);
 					didClass = true;
 				}
 				if(level == 1) {
-					if(didClass) html.out.write(' ');
-					html.out.write("expanded");
+					if(didClass) document.out.write(' ');
+					document.out.write("expanded");
 				}
-				html.out.write('"');
+				document.out.write('"');
 			}
-			html.out.write("><a");
+			document.out.write("><a");
 		}
 		// Look for thisPage match
 		boolean thisPageClass = false;
 		if(pageRef.equals(thisPageRef) && element == null) {
 			if(!foundThisPage) {
-				if(html != null) html.out.write(" id=\"semanticcms-core-tree-this-page\"");
+				if(document != null) document.out.write(" id=\"semanticcms-core-tree-this-page\"");
 				foundThisPage = true;
 			}
 			thisPageClass = true;
 		}
 		// Look for linkToPage match
 		boolean linksToPageClass = nodesWithLinks!=null && nodesWithLinks.contains(node);
-		if(html != null && (thisPageClass || linksToPageClass)) {
-			html.out.write(" class=\"");
+		if(document != null && (thisPageClass || linksToPageClass)) {
+			document.out.write(" class=\"");
 			if(thisPageClass && nodesWithLinks!=null && !linksToPageClass) {
-				html.out.write("semanticcms-core-no-link-to-this-page");
+				document.out.write("semanticcms-core-no-link-to-this-page");
 			} else if(thisPageClass) {
-				html.out.write("semanticcms-core-tree-this-page");
+				document.out.write("semanticcms-core-tree-this-page");
 			} else if(linksToPageClass) {
-				html.out.write("semanticcms-core-links-to-page");
+				document.out.write("semanticcms-core-links-to-page");
 			} else {
 				throw new AssertionError();
 			}
-			html.out.write('"');
+			document.out.write('"');
 		}
-		if(html != null) {
+		if(document != null) {
 			if(target != null) {
-				html.out.write(" target=\"");
-				encodeTextInXhtmlAttribute(target, html.out);
-				html.out.write('"');
+				document.out.write(" target=\"");
+				encodeTextInXhtmlAttribute(target, document.out);
+				document.out.write('"');
 			}
 			Integer index = pageIndex==null ? null : pageIndex.getPageIndex(pageRef);
-			html.out.write(" href=\"");
+			document.out.write(" href=\"");
 			StringBuilder href = new StringBuilder();
 			if(index != null) {
 				href.append('#');
@@ -569,21 +569,21 @@ final public class NavigationTreeRenderer {
 				response.encodeURL(
 					href.toString()
 				),
-				html.out
+				document.out
 			);
-			html.out.write("\">");
+			document.out.write("\">");
 			if(node instanceof Page) {
 				// Use shortTitle for pages
-				html.text(PageUtils.getShortTitle(parentPageRef, (Page)node));
+				document.text(PageUtils.getShortTitle(parentPageRef, (Page)node));
 			} else {
-				html.text(node.getLabel());
+				document.text(node.getLabel());
 			}
 			if(index != null) {
-				html.out.write("<sup>[");
-				html.text(index + 1);
-				html.out.write("]</sup>");
+				document.out.write("<sup>[");
+				document.text(index + 1);
+				document.out.write("]</sup>");
 			}
-			html.out.write("</a>");
+			document.out.write("</a>");
 		}
 		if(maxDepth==0 || level < maxDepth) {
 			List<Node> childNodes = NavigationTreeRenderer.getChildNodes(servletContext, request, response, includeElements, false, node);
@@ -591,8 +591,8 @@ final public class NavigationTreeRenderer {
 				childNodes = NavigationTreeRenderer.filterNodes(childNodes, nodesWithChildLinks);
 			}
 			if(!childNodes.isEmpty()) {
-				if(html != null) {
-					html.out.write("\n"
+				if(document != null) {
+					document.out.write("\n"
 						+ "<ul>\n");
 				}
 				for(Node childNode : childNodes) {
@@ -600,7 +600,7 @@ final public class NavigationTreeRenderer {
 						servletContext,
 						request,
 						response,
-						html,
+						document,
 						currentNode,
 						nodesWithLinks,
 						nodesWithChildLinks,
@@ -616,10 +616,10 @@ final public class NavigationTreeRenderer {
 						level+1
 					);
 				}
-				if(html != null) html.out.write("</ul>\n");
+				if(document != null) document.out.write("</ul>\n");
 			}
 		}
-		if(html != null) html.out.write("</li>\n");
+		if(document != null) document.out.write("</li>\n");
 		return foundThisPage;
 	}
 

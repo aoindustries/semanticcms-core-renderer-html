@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-renderer-html - SemanticCMS pages rendered as HTML in a Servlet environment.
- * Copyright (C) 2016, 2017, 2019, 2020  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2019, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -22,7 +22,7 @@
  */
 package com.semanticcms.core.renderer.html;
 
-import com.aoindustries.html.Html;
+import com.aoindustries.html.Document;
 import com.semanticcms.core.model.Page;
 import java.io.IOException;
 import javax.servlet.ServletContext;
@@ -54,7 +54,7 @@ public interface Component {
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		Html html,
+		Document document,
 		View view,
 		Page page,
 		ComponentPosition position

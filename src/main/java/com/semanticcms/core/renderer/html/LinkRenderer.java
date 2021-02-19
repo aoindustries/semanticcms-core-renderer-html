@@ -25,7 +25,7 @@ package com.semanticcms.core.renderer.html;
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextInXhtmlAttribute;
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.textInXhtmlAttributeEncoder;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
-import com.aoindustries.html.Html;
+import com.aoindustries.html.Document;
 import com.aoindustries.lang.Coercion;
 import static com.aoindustries.lang.Strings.nullIfEmpty;
 import com.aoindustries.net.DomainName;
@@ -227,7 +227,7 @@ final public class LinkRenderer {
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		Html html,
+		Document document,
 		Link link,
 		LinkRendererBody<E> body
 	) throws E, ServletException, IOException, SkipPageException {
@@ -238,7 +238,7 @@ final public class LinkRenderer {
 				servletContext,
 				request,
 				response,
-				html,
+				document,
 				link.getDomain(),
 				link.getBook(),
 				link.getPagePath(),
@@ -273,7 +273,7 @@ final public class LinkRenderer {
 		ELContext elContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		Html html,
+		Document document,
 		ValueExpression domain,
 		ValueExpression book,
 		ValueExpression page,
@@ -328,7 +328,7 @@ final public class LinkRenderer {
 				servletContext,
 				request,
 				response,
-				html,
+				document,
 				domainObj,
 				bookPath,
 				pageStr,
@@ -351,7 +351,7 @@ final public class LinkRenderer {
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		Html html,
+		Document document,
 		DomainName domain,
 		Path book,
 		String page,
@@ -451,7 +451,7 @@ final public class LinkRenderer {
 			PageIndex pageIndex = PageIndex.getCurrentPageIndex(request);
 			Integer index = pageIndex==null ? null : pageIndex.getPageIndex(targetPageRef);
 
-			html.out.write(small ? "<span" : "<a");
+			document.out.write(small ? "<span" : "<a");
 			StringBuilder href = new StringBuilder();
 			if(element == null) {
 				if(anchor == null) {
@@ -520,7 +520,7 @@ final public class LinkRenderer {
 				writeHref(
 					request,
 					response,
-					html.out,
+					document.out,
 					href.toString(),
 					params,
 					absolute,
@@ -529,50 +529,50 @@ final public class LinkRenderer {
 			}
 			if(clazz != null) {
 				if(!Coercion.isEmpty(clazz)) {
-					html.out.write(" class=\"");
-					Coercion.write(clazz, textInXhtmlAttributeEncoder, html.out);
-					html.out.write('"');
+					document.out.write(" class=\"");
+					Coercion.write(clazz, textInXhtmlAttributeEncoder, document.out);
+					document.out.write('"');
 				}
 			} else {
 				if(targetElement != null) {
 					String linkCssClass = htmlRenderer.getLinkCssClass(targetElement);
 					if(linkCssClass != null) {
-						html.out.write(" class=\"");
-						encodeTextInXhtmlAttribute(linkCssClass, html.out);
-						html.out.write('"');
+						document.out.write(" class=\"");
+						encodeTextInXhtmlAttribute(linkCssClass, document.out);
+						document.out.write('"');
 					}
 				}
 			}
 			// Add nofollow consistent with view and page settings.
 			// TODO: Nofollow to missing books that cause targetPage to be null here?
 			if(targetPage != null && !view.getAllowRobots(servletContext, request, response, targetPage)) {
-				html.out.write(" rel=\"nofollow\"");
+				document.out.write(" rel=\"nofollow\"");
 			}
-			html.out.write('>');
+			document.out.write('>');
 
 			if(body == null) {
 				if(targetElement != null) {
-					html.text(targetElement.getLabel());
+					document.text(targetElement.getLabel());
 				} else if(targetPage != null) {
-					html.text(targetPage.getTitle());
+					document.text(targetPage.getTitle());
 				} else {
-					writeBrokenPathInXhtml(targetPageRef, element, html.out);
+					writeBrokenPathInXhtml(targetPageRef, element, document.out);
 				}
 				if(index != null) {
-					html.out.write("<sup>[");
-					html.text(index + 1);
-					html.out.write("]</sup>");
+					document.out.write("<sup>[");
+					document.text(index + 1);
+					document.out.write("]</sup>");
 				}
 			} else {
 				body.doBody(false);
 			}
 			if(small) {
 				// TODO: Support multi-domain
-				html.out.write("<sup><a");
+				document.out.write("<sup><a");
 				writeHref(
 					request,
 					response,
-					html.out,
+					document.out,
 					href.toString(),
 					params,
 					absolute,
@@ -580,9 +580,9 @@ final public class LinkRenderer {
 				);
 				// TODO: Make [link] not copied during select/copy/paste, to not corrupt semantic meaning (and make more useful in copy/pasted code and scripts)?
 				// TODO: https://stackoverflow.com/questions/3271231/how-to-exclude-portions-of-text-when-copying
-				html.out.write(">[link]</a></sup></span>");
+				document.out.write(">[link]</a></sup></span>");
 			} else {
-				html.out.write("</a>");
+				document.out.write("</a>");
 			}
 		} else {
 			// Invoke body for any meta data, but discard any output
