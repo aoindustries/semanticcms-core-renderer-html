@@ -50,6 +50,9 @@ public interface Component {
 	 * @param view  The view that is currently being rendered.  May be {@code null} during error handling.
 	 * @param page  The page that is currently being rendered.  May be {@code null} during error handling.
 	 */
+	// TODO: Different methods for each position, with default no-ops.
+	//       No more "ComponentPosition".
+	//       Pass more specific *Content types rather than generic Document
 	void doComponent(
 		ServletContext servletContext,
 		HttpServletRequest request,

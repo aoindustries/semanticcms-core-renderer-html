@@ -23,10 +23,14 @@
 package com.semanticcms.core.renderer.html;
 
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextInXhtmlAttribute;
-import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.textInXhtmlAttributeEncoder;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
-import com.aoindustries.html.Document;
-import com.aoindustries.lang.Coercion;
+import com.aoindustries.exception.WrappedException;
+import com.aoindustries.html.A;
+import com.aoindustries.html.A_factory;
+import com.aoindustries.html.SPAN;
+import com.aoindustries.html.SPAN_c;
+import com.aoindustries.html.SPAN_factory;
+import com.aoindustries.html.Union_Palpable_Phrasing;
 import static com.aoindustries.lang.Strings.nullIfEmpty;
 import com.aoindustries.net.DomainName;
 import com.aoindustries.net.Path;
@@ -223,11 +227,11 @@ final public class LinkRenderer {
 		}
 	}
 
-	public static <E extends Throwable> void writeLinkImpl(
+	public static <__ extends Union_Palpable_Phrasing<__>, E extends Throwable> void writeLinkImpl(
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		Document document,
+		__ content,
 		Link link,
 		LinkRendererBody<E> body
 	) throws E, ServletException, IOException, SkipPageException {
@@ -238,7 +242,7 @@ final public class LinkRenderer {
 				servletContext,
 				request,
 				response,
-				document,
+				content,
 				link.getDomain(),
 				link.getBook(),
 				link.getPagePath(),
@@ -268,12 +272,12 @@ final public class LinkRenderer {
 	 * @param viewName  ValueExpression that returns String, evaluated at {@link CaptureLevel#BODY} only
 	 * @param clazz     ValueExpression that returns Object, evaluated at {@link CaptureLevel#BODY} only
 	 */
-	public static <E extends Throwable> void writeLinkImpl(
+	public static <__ extends Union_Palpable_Phrasing<__>, E extends Throwable> void writeLinkImpl(
 		ServletContext servletContext,
 		ELContext elContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		Document document,
+		__ content,
 		ValueExpression domain,
 		ValueExpression book,
 		ValueExpression page,
@@ -328,7 +332,7 @@ final public class LinkRenderer {
 				servletContext,
 				request,
 				response,
-				document,
+				content,
 				domainObj,
 				bookPath,
 				pageStr,
@@ -347,11 +351,14 @@ final public class LinkRenderer {
 		}
 	}
 
-	private static <E extends Throwable> void writeLinkImpl(
+	/**
+	 * @param <__>  {@link Union_Palpable_Phrasing} provides both {@link A_factory} and {@link SPAN_factory}.
+	 */
+	private static <__ extends Union_Palpable_Phrasing<__>, E extends Throwable> void writeLinkImpl(
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		Document document,
+		__ content,
 		DomainName domain,
 		Path book,
 		String page,
@@ -377,7 +384,6 @@ final public class LinkRenderer {
 
 		final Node currentNode = CurrentNode.getCurrentNode(request);
 		final Page currentPage = CurrentPage.getCurrentPage(request);
-
 
 		// Use current page when page not set
 		final PageRef targetPageRef;
@@ -451,7 +457,6 @@ final public class LinkRenderer {
 			PageIndex pageIndex = PageIndex.getCurrentPageIndex(request);
 			Integer index = pageIndex==null ? null : pageIndex.getPageIndex(targetPageRef);
 
-			document.out.write(small ? "<span" : "<a");
 			StringBuilder href = new StringBuilder();
 			if(element == null) {
 				if(anchor == null) {
@@ -516,73 +521,106 @@ final public class LinkRenderer {
 					URIEncoder.encodeURIComponent(element, href);
 				}
 			}
-			if(!small) {
-				writeHref(
-					request,
-					response,
-					document.out,
-					href.toString(),
-					params,
-					absolute,
-					canonical
-				);
-			}
-			if(clazz != null) {
-				if(!Coercion.isEmpty(clazz)) {
-					document.out.write(" class=\"");
-					Coercion.write(clazz, textInXhtmlAttributeEncoder, document.out);
-					document.out.write('"');
-				}
-			} else {
-				if(targetElement != null) {
-					String linkCssClass = htmlRenderer.getLinkCssClass(targetElement);
-					if(linkCssClass != null) {
-						document.out.write(" class=\"");
-						encodeTextInXhtmlAttribute(linkCssClass, document.out);
-						document.out.write('"');
-					}
-				}
-			}
 			// Add nofollow consistent with view and page settings.
 			// TODO: Nofollow to missing books that cause targetPage to be null here?
-			if(targetPage != null && !view.getAllowRobots(servletContext, request, response, targetPage)) {
-				document.out.write(" rel=\"nofollow\"");
-			}
-			document.out.write('>');
+			boolean nofollow = targetPage != null && !view.getAllowRobots(servletContext, request, response, targetPage);
 
-			if(body == null) {
-				if(targetElement != null) {
-					document.text(targetElement.getLabel());
-				} else if(targetPage != null) {
-					document.text(targetPage.getTitle());
-				} else {
-					writeBrokenPathInXhtml(targetPageRef, element, document.out);
-				}
-				if(index != null) {
-					document.out.write("<sup>[");
-					document.text(index + 1);
-					document.out.write("]</sup>");
-				}
-			} else {
-				body.doBody(false);
-			}
+			final String element_ = element;
 			if(small) {
-				// TODO: Support multi-domain
-				document.out.write("<sup><a");
-				writeHref(
-					request,
-					response,
-					document.out,
-					href.toString(),
-					params,
-					absolute,
-					canonical
-				);
-				// TODO: Make [link] not copied during select/copy/paste, to not corrupt semantic meaning (and make more useful in copy/pasted code and scripts)?
-				// TODO: https://stackoverflow.com/questions/3271231/how-to-exclude-portions-of-text-when-copying
-				document.out.write(">[link]</a></sup></span>");
+				SPAN<__> span = content.span();
+				if(clazz != null) {
+					span.clazz(clazz);
+				} else {
+					if(targetElement != null) {
+						span.clazz(htmlRenderer.getLinkCssClass(targetElement));
+					}
+				}
+				try (SPAN_c<__> span__ = span._c()) {
+					if(body == null) {
+						if(targetElement != null) {
+							span__.text(targetElement);
+						} else if(targetPage != null) {
+							span__.text(targetPage.getTitle());
+						} else {
+							span__.text(text -> writeBrokenPath(targetPageRef, element_, text));
+						}
+						if(index != null) {
+							span__.sup__(sup -> sup
+								.text('[').text(index + 1).text(']')
+							);
+						}
+					} else {
+						body.doBody(false);
+					}
+					// TODO: Support multi-domain
+					span__.sup__(sup -> sup
+						.a()
+							.href(
+								HttpServletUtil.buildURL(
+									request,
+									response,
+									href.toString(),
+									params,
+									absolute,
+									canonical
+								)
+							)
+							.rel(nofollow ? A.Rel.NOFOLLOW : null)
+						.__(
+							// TODO: Make [link] not copied during select/copy/paste, to not corrupt semantic meaning (and make more useful in copy/pasted code and scripts)?
+							// TODO: https://stackoverflow.com/questions/3271231/how-to-exclude-portions-of-text-when-copying
+							"[link]"
+						)
+					);
+				}
 			} else {
-				document.out.write("</a>");
+				A<__> a = content.a(
+					HttpServletUtil.buildURL(
+						request,
+						response,
+						href.toString(),
+						params,
+						absolute,
+						canonical
+					)
+				);
+				if(clazz != null) {
+					a.clazz(clazz);
+				} else {
+					if(targetElement != null) {
+						a.clazz(htmlRenderer.getLinkCssClass(targetElement));
+					}
+				}
+				if(nofollow) a.rel(A.Rel.NOFOLLOW);
+				// TODO: There is no a._c() for use in try.  Using WrappedException as a workaround
+				try {
+					a.__(a__ -> {
+						if(body == null) {
+							if(targetElement != null) {
+								a__.text(targetElement);
+							} else if(targetPage != null) {
+								a__.text(targetPage.getTitle());
+							} else {
+								a__.text(text -> writeBrokenPath(targetPageRef, element_, text));
+							}
+							if(index != null) {
+								a__.sup__(sup -> sup
+									.text('[').text(index + 1).text(']')
+								);
+							}
+						} else {
+							try {
+								body.doBody(false);
+							} catch(SkipPageException e) {
+								throw new WrappedException(e);
+							}
+						}
+					});
+				} catch(WrappedException e) {
+					Throwable cause = e.getCause();
+					if(cause instanceof SkipPageException) throw (SkipPageException)cause;
+					throw e;
+				}
 			}
 		} else {
 			// Invoke body for any meta data, but discard any output
