@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-renderer-html - SemanticCMS pages rendered as HTML in a Servlet environment.
- * Copyright (C) 2013, 2014, 2015, 2016, 2017, 2019, 2020  AO Industries, Inc.
+ * Copyright (C) 2013, 2014, 2015, 2016, 2017, 2019, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -247,7 +247,7 @@ public class PageIndex {
 
 	private final Page rootPage;
 	private final List<Page> pageList;
-	private final Map<PageRef,Integer> pageIndexes;
+	private final Map<PageRef, Integer> pageIndexes;
 
 	private PageIndex(
 		ServletContext servletContext,
@@ -265,7 +265,7 @@ public class PageIndex {
 		);
 		int size = pageList.size();
 		// Index pages
-		Map<PageRef,Integer> newPageIndexes = AoCollections.newHashMap(size);
+		Map<PageRef, Integer> newPageIndexes = AoCollections.newHashMap(size);
 		for(int i=0; i<size; i++) {
 			newPageIndexes.put(pageList.get(i).getPageRef(), i);
 		}
@@ -285,7 +285,7 @@ public class PageIndex {
 	}
 
 	@SuppressWarnings("ReturnOfCollectionOrArrayField") // Returning unmodifiable
-	public Map<PageRef,Integer> getPageIndexes() {
+	public Map<PageRef, Integer> getPageIndexes() {
 		return pageIndexes;
 	}
 	

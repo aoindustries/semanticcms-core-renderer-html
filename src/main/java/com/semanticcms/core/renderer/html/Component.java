@@ -22,7 +22,7 @@
  */
 package com.semanticcms.core.renderer.html;
 
-import com.aoindustries.html.Document;
+import com.aoindustries.html.servlet.DocumentEE;
 import com.semanticcms.core.model.Page;
 import java.io.IOException;
 import javax.servlet.ServletContext;
@@ -57,7 +57,7 @@ public interface Component {
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		Document document,
+		DocumentEE document,
 		View view,
 		Page page,
 		ComponentPosition position

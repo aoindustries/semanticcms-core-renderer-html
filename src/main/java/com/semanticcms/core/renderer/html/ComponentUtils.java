@@ -22,7 +22,7 @@
  */
 package com.semanticcms.core.renderer.html;
 
-import com.aoindustries.html.Document;
+import com.aoindustries.html.servlet.DocumentEE;
 import com.semanticcms.core.model.Page;
 import java.io.IOException;
 import java.util.List;
@@ -40,7 +40,7 @@ final public class ComponentUtils {
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		Document document,
+		DocumentEE document,
 		View view,
 		Page page,
 		ComponentPosition position,

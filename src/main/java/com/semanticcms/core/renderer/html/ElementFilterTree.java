@@ -22,6 +22,7 @@
  */
 package com.semanticcms.core.renderer.html;
 
+import com.aoindustries.html.AnyDocument;
 import com.aoindustries.html.LI_c;
 import com.aoindustries.html.PalpableContent;
 import com.aoindustries.html.UL_c;
@@ -141,14 +142,21 @@ final public class ElementFilterTree {
 		return hasMatch;
 	}
 
-	private static <__ extends PalpableContent<__>> void writeNode(
+	/**
+	 * @param  <D>   This document type
+	 * @param  <__>  {@link Union_Palpable_Phrasing} provides both {@link A_factory} and {@link SPAN_factory}.
+	 */
+	private static <
+		D extends AnyDocument<D>,
+		__ extends PalpableContent<D, __>
+	> void writeNode(
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
 		Node currentNode,
 		Set<Node> nodesWithMatches,
 		PageIndex pageIndex,
-		UL_c<__> ul__,
+		UL_c<D, __> ul__,
 		Node node,
 		boolean includeElements
 	) throws ServletException, IOException, SkipPageException {
@@ -169,7 +177,7 @@ final public class ElementFilterTree {
 			// Add page links
 			currentNode.addPageLink(pageRef);
 		}
-		LI_c<UL_c<__>> li_c;
+		LI_c<D, UL_c<D, __>> li_c;
 		if(ul__ != null) {
 			StringBuilder url = new StringBuilder();
 			Integer index = pageIndex==null ? null : pageIndex.getPageIndex(pageRef);
@@ -210,7 +218,7 @@ final public class ElementFilterTree {
 		List<Node> childNodes = NavigationTreeRenderer.getChildNodes(servletContext, request, response, includeElements, true, node);
 		childNodes = NavigationTreeRenderer.filterNodes(childNodes, nodesWithMatches);
 		if(!childNodes.isEmpty()) {
-			UL_c<LI_c<UL_c<__>>> ul_c = (li_c != null) ? li_c.ul_c() : null;
+			UL_c<D, LI_c<D, UL_c<D, __>>> ul_c = (li_c != null) ? li_c.ul_c() : null;
 			for(Node childNode : childNodes) {
 				writeNode(servletContext, request, response, currentNode, nodesWithMatches, pageIndex, ul_c, childNode, includeElements);
 			}
@@ -222,7 +230,10 @@ final public class ElementFilterTree {
 	// Traversal-based implementation is proving too complicated due to needing to
 	// look ahead to know which elements to show.
 	// TODO: Caching?
-	public static <__ extends PalpableContent<__>> void writeElementFilterTreeImpl(
+	public static <
+		D extends AnyDocument<D>,
+		__ extends PalpableContent<D, __>
+	> void writeElementFilterTreeImpl(
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
@@ -247,7 +258,7 @@ final public class ElementFilterTree {
 				root,
 				includeElements
 			);
-			UL_c<__> ul_c = (captureLevel == CaptureLevel.BODY) ? content.ul_c() : null;
+			UL_c<D, __> ul_c = (captureLevel == CaptureLevel.BODY) ? content.ul_c() : null;
 			writeNode(
 				servletContext,
 				request,
@@ -263,7 +274,10 @@ final public class ElementFilterTree {
 		}
 	}
 
-	public static <__ extends PalpableContent<__>> void writeElementFilterTreeImpl(
+	public static <
+		D extends AnyDocument<D>,
+		__ extends PalpableContent<D, __>
+	> void writeElementFilterTreeImpl(
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
