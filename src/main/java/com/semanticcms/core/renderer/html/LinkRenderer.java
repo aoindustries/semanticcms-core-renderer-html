@@ -26,11 +26,9 @@ import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextIn
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import com.aoindustries.exception.WrappedException;
 import com.aoindustries.html.A;
-import com.aoindustries.html.A_factory;
 import com.aoindustries.html.AnyDocument;
 import com.aoindustries.html.SPAN;
 import com.aoindustries.html.SPAN_c;
-import com.aoindustries.html.SPAN_factory;
 import com.aoindustries.html.Union_Palpable_Phrasing;
 import static com.aoindustries.lang.Strings.nullIfEmpty;
 import com.aoindustries.net.DomainName;
@@ -369,7 +367,7 @@ final public class LinkRenderer {
 
 	/**
 	 * @param  <D>   This document type
-	 * @param  <__>  {@link Union_Palpable_Phrasing} provides both {@link A_factory} and {@link SPAN_factory}.
+	 * @param  <__>  {@link Union_Palpable_Phrasing} provides both {@link A} and {@link SPAN}.
 	 * @param  <Ex>  An arbitrary exception type that may be thrown
 	 */
 	private static <

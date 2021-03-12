@@ -22,9 +22,11 @@
  */
 package com.semanticcms.core.renderer.html;
 
+import com.aoindustries.html.A;
 import com.aoindustries.html.AnyDocument;
 import com.aoindustries.html.LI_c;
 import com.aoindustries.html.PalpableContent;
+import com.aoindustries.html.SPAN;
 import com.aoindustries.html.UL_c;
 import com.aoindustries.net.URIEncoder;
 import com.semanticcms.core.controller.CapturePage;
@@ -144,7 +146,7 @@ final public class ElementFilterTree {
 
 	/**
 	 * @param  <D>   This document type
-	 * @param  <__>  {@link Union_Palpable_Phrasing} provides both {@link A_factory} and {@link SPAN_factory}.
+	 * @param  <__>  {@link Union_Palpable_Phrasing} provides both {@link A} and {@link SPAN}.
 	 */
 	private static <
 		D extends AnyDocument<D>,
