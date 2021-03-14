@@ -25,11 +25,11 @@ package com.semanticcms.core.renderer.html;
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextInXhtmlAttribute;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import com.aoindustries.exception.WrappedException;
-import com.aoindustries.html.A;
-import com.aoindustries.html.AnyDocument;
-import com.aoindustries.html.SPAN;
-import com.aoindustries.html.SPAN_c;
-import com.aoindustries.html.Union_Palpable_Phrasing;
+import com.aoindustries.html.any.AnyA;
+import com.aoindustries.html.any.AnyDocument;
+import com.aoindustries.html.any.AnySPAN;
+import com.aoindustries.html.any.AnySPAN_c;
+import com.aoindustries.html.any.AnyUnion_Palpable_Phrasing;
 import static com.aoindustries.lang.Strings.nullIfEmpty;
 import com.aoindustries.net.DomainName;
 import com.aoindustries.net.Path;
@@ -234,7 +234,7 @@ final public class LinkRenderer {
 	 */
 	public static <
 		D extends AnyDocument<D>,
-		__ extends Union_Palpable_Phrasing<D, __>,
+		__ extends AnyUnion_Palpable_Phrasing<D, __>,
 		Ex extends Throwable
 	> void writeLinkImpl(
 		ServletContext servletContext,
@@ -284,7 +284,7 @@ final public class LinkRenderer {
 	 */
 	public static <
 		D extends AnyDocument<D>,
-		__ extends Union_Palpable_Phrasing<D, __>,
+		__ extends AnyUnion_Palpable_Phrasing<D, __>,
 		Ex extends Throwable
 	> void writeLinkImpl(
 		ServletContext servletContext,
@@ -367,12 +367,12 @@ final public class LinkRenderer {
 
 	/**
 	 * @param  <D>   This document type
-	 * @param  <__>  {@link Union_Palpable_Phrasing} provides both {@link A} and {@link SPAN}.
+	 * @param  <__>  {@link AnyUnion_Palpable_Phrasing} provides both {@link A} and {@link SPAN}.
 	 * @param  <Ex>  An arbitrary exception type that may be thrown
 	 */
 	private static <
 		D extends AnyDocument<D>,
-		__ extends Union_Palpable_Phrasing<D, __>,
+		__ extends AnyUnion_Palpable_Phrasing<D, __>,
 		Ex extends Throwable
 	> void writeLinkImpl(
 		ServletContext servletContext,
@@ -547,7 +547,7 @@ final public class LinkRenderer {
 
 			final String element_ = element;
 			if(small) {
-				SPAN<D, __> span = content.span();
+				AnySPAN<D, __, ?, ?, ?> span = content.span();
 				if(clazz != null) {
 					span.clazz(clazz);
 				} else {
@@ -555,7 +555,7 @@ final public class LinkRenderer {
 						span.clazz(htmlRenderer.getLinkCssClass(targetElement));
 					}
 				}
-				try (SPAN_c<D, __> span__ = span._c()) {
+				try (AnySPAN_c<D, __, ?> span__ = span._c()) {
 					if(body == null) {
 						if(targetElement != null) {
 							span__.text(targetElement);
@@ -565,7 +565,7 @@ final public class LinkRenderer {
 							span__.text(text -> writeBrokenPath(targetPageRef, element_, text));
 						}
 						if(index != null) {
-							span__.sup__(sup -> sup
+							span__.sup__any(sup -> sup
 								.text('[').text(index + 1).text(']')
 							);
 						}
@@ -573,7 +573,7 @@ final public class LinkRenderer {
 						body.doBody(false);
 					}
 					// TODO: Support multi-domain
-					span__.sup__(sup -> sup
+					span__.sup__any(sup -> sup
 						.a()
 							.href(
 								HttpServletUtil.buildURL(
@@ -585,7 +585,7 @@ final public class LinkRenderer {
 									canonical
 								)
 							)
-							.rel(nofollow ? A.Rel.NOFOLLOW : null)
+							.rel(nofollow ? AnyA.Rel.NOFOLLOW : null)
 						.__(
 							// TODO: Make [link] not copied during select/copy/paste, to not corrupt semantic meaning (and make more useful in copy/pasted code and scripts)?
 							// TODO: https://stackoverflow.com/questions/3271231/how-to-exclude-portions-of-text-when-copying
@@ -594,7 +594,7 @@ final public class LinkRenderer {
 					);
 				}
 			} else {
-				A<D, __> a = content.a(
+				AnyA<D, __, ?, ?> a = content.a(
 					HttpServletUtil.buildURL(
 						request,
 						response,
@@ -611,7 +611,7 @@ final public class LinkRenderer {
 						a.clazz(htmlRenderer.getLinkCssClass(targetElement));
 					}
 				}
-				if(nofollow) a.rel(A.Rel.NOFOLLOW);
+				if(nofollow) a.rel(AnyA.Rel.NOFOLLOW);
 				// TODO: There is no a._c() for use in try.  Using WrappedException as a workaround
 				try {
 					a.__(a__ -> {
@@ -624,7 +624,7 @@ final public class LinkRenderer {
 								a__.text(text -> writeBrokenPath(targetPageRef, element_, text));
 							}
 							if(index != null) {
-								a__.sup__(sup -> sup
+								a__.sup__any(sup -> sup
 									.text('[').text(index + 1).text(']')
 								);
 							}
