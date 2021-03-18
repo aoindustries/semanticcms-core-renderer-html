@@ -24,8 +24,8 @@ package com.semanticcms.core.renderer.html;
 
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextInXhtmlAttribute;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
-import com.aoindustries.exception.WrappedException;
 import com.aoindustries.html.any.AnyA;
+import com.aoindustries.html.any.AnyA_c;
 import com.aoindustries.html.any.AnySPAN;
 import com.aoindustries.html.any.AnySPAN_c;
 import com.aoindustries.html.any.AnyUnion_Palpable_Phrasing;
@@ -598,34 +598,23 @@ final public class LinkRenderer {
 					}
 				}
 				if(nofollow) a.rel(AnyA.Rel.NOFOLLOW);
-				// TODO: There is no a._c() for use in try.  Using WrappedException as a workaround
-				try {
-					a.__(a__ -> {
-						if(body == null) {
-							if(targetElement != null) {
-								a__.text(targetElement);
-							} else if(targetPage != null) {
-								a__.text(targetPage.getTitle());
-							} else {
-								a__.text(text -> writeBrokenPath(targetPageRef, element_, text));
-							}
-							if(index != null) {
-								a__.sup__any(sup -> sup
-									.text('[').text(index + 1).text(']')
-								);
-							}
+				try (AnyA_c<?, ? extends AnyUnion_Palpable_Phrasing<?, ?>, ?> a_c = a._c()) {
+					if(body == null) {
+						if(targetElement != null) {
+							a_c.pc().text(targetElement);
+						} else if(targetPage != null) {
+							a_c.pc().text(targetPage.getTitle());
 						} else {
-							try {
-								body.doBody(false);
-							} catch(SkipPageException e) {
-								throw new WrappedException(e);
-							}
+							a_c.pc().text(text -> writeBrokenPath(targetPageRef, element_, text));
 						}
-					});
-				} catch(WrappedException e) {
-					Throwable cause = e.getCause();
-					if(cause instanceof SkipPageException) throw (SkipPageException)cause;
-					throw e;
+						if(index != null) {
+							a_c.pc().sup__any(sup -> sup
+								.text('[').text(index + 1).text(']')
+							);
+						}
+					} else {
+						body.doBody(false);
+					}
 				}
 			}
 		} else {
