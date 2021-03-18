@@ -22,7 +22,6 @@
  */
 package com.semanticcms.core.renderer.html;
 
-import com.aoindustries.html.any.AnyDocument;
 import com.aoindustries.html.any.AnyLI_c;
 import com.aoindustries.html.any.AnyPalpableContent;
 import com.aoindustries.html.any.AnyUL_c;
@@ -142,21 +141,14 @@ final public class ElementFilterTree {
 		return hasMatch;
 	}
 
-	/**
-	 * @param  <D>   This document type
-	 * @param  <__>  This content model, which will be the parent content model of child elements
-	 */
-	private static <
-		D extends AnyDocument<D>,
-		__ extends AnyPalpableContent<D, __>
-	> void writeNode(
+	private static void writeNode(
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
 		Node currentNode,
 		Set<Node> nodesWithMatches,
 		PageIndex pageIndex,
-		AnyUL_c<D, __, ?> ul__,
+		AnyUL_c<?, ?, ?> ul__,
 		Node node,
 		boolean includeElements
 	) throws ServletException, IOException, SkipPageException {
@@ -177,7 +169,7 @@ final public class ElementFilterTree {
 			// Add page links
 			currentNode.addPageLink(pageRef);
 		}
-		AnyLI_c<D, ?, ?> li_c;
+		AnyLI_c<?, ?, ?> li_c;
 		if(ul__ != null) {
 			StringBuilder url = new StringBuilder();
 			Integer index = pageIndex==null ? null : pageIndex.getPageIndex(pageRef);
@@ -218,7 +210,7 @@ final public class ElementFilterTree {
 		List<Node> childNodes = NavigationTreeRenderer.getChildNodes(servletContext, request, response, includeElements, true, node);
 		childNodes = NavigationTreeRenderer.filterNodes(childNodes, nodesWithMatches);
 		if(!childNodes.isEmpty()) {
-			AnyUL_c<D, ?, ?> ul_c = (li_c != null) ? li_c.ul_c() : null;
+			AnyUL_c<?, ?, ?> ul_c = (li_c != null) ? li_c.ul_c() : null;
 			for(Node childNode : childNodes) {
 				writeNode(servletContext, request, response, currentNode, nodesWithMatches, pageIndex, ul_c, childNode, includeElements);
 			}
@@ -230,14 +222,11 @@ final public class ElementFilterTree {
 	// Traversal-based implementation is proving too complicated due to needing to
 	// look ahead to know which elements to show.
 	// TODO: Caching?
-	public static <
-		D extends AnyDocument<D>,
-		__ extends AnyPalpableContent<D, __>
-	> void writeElementFilterTreeImpl(
+	public static void writeElementFilterTreeImpl(
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		__ content,
+		AnyPalpableContent<?, ?> content,
 		ElementFilter elementFilter,
 		Node root,
 		boolean includeElements
@@ -258,7 +247,7 @@ final public class ElementFilterTree {
 				root,
 				includeElements
 			);
-			AnyUL_c<D, __, ?> ul_c = (captureLevel == CaptureLevel.BODY) ? content.ul_c() : null;
+			AnyUL_c<?, ?, ?> ul_c = (captureLevel == CaptureLevel.BODY) ? content.ul_c() : null;
 			writeNode(
 				servletContext,
 				request,
@@ -274,14 +263,11 @@ final public class ElementFilterTree {
 		}
 	}
 
-	public static <
-		D extends AnyDocument<D>,
-		__ extends AnyPalpableContent<D, __>
-	> void writeElementFilterTreeImpl(
+	public static void writeElementFilterTreeImpl(
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		__ content,
+		AnyPalpableContent<?, ?> content,
 		Class<? extends Element> elementType,
 		Node root,
 		boolean includeElements
