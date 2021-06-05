@@ -22,7 +22,7 @@
  */
 package com.semanticcms.core.renderer.html;
 
-import com.aoindustries.html.servlet.DocumentEE;
+import com.aoapps.html.servlet.DocumentEE;
 import com.semanticcms.core.model.Page;
 import java.io.IOException;
 import javax.servlet.ServletContext;

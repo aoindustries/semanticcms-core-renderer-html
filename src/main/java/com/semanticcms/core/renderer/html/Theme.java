@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-renderer-html - SemanticCMS pages rendered as HTML in a Servlet environment.
- * Copyright (C) 2016, 2017, 2019, 2020  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2019, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -22,11 +22,11 @@
  */
 package com.semanticcms.core.renderer.html;
 
-import com.aoindustries.encoding.Doctype;
-import com.aoindustries.encoding.Serialization;
-import com.aoindustries.encoding.servlet.DoctypeEE;
-import com.aoindustries.encoding.servlet.SerializationEE;
-import com.aoindustries.web.resources.registry.Registry;
+import com.aoapps.encoding.Doctype;
+import com.aoapps.encoding.Serialization;
+import com.aoapps.encoding.servlet.DoctypeEE;
+import com.aoapps.encoding.servlet.SerializationEE;
+import com.aoapps.web.resources.registry.Registry;
 import com.semanticcms.core.model.Page;
 import java.io.IOException;
 import javax.servlet.ServletContext;
@@ -104,7 +104,7 @@ abstract public class Theme {
 	}
 
 	/**
-	 * Configures the {@linkplain com.aoindustries.web.resources.servlet.RegistryEE.Request request-scope web resources} that this theme uses.
+	 * Configures the {@linkplain com.aoapps.web.resources.servlet.RegistryEE.Request request-scope web resources} that this theme uses.
 	 * <p>
 	 * Implementers should call <code>super.configureResources(…)</code> as a matter of convention, despite this default implementation doing nothing.
 	 * </p>

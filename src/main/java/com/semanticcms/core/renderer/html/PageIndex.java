@@ -22,8 +22,8 @@
  */
 package com.semanticcms.core.renderer.html;
 
-import com.aoindustries.collections.AoCollections;
-import com.aoindustries.lang.NullArgumentException;
+import com.aoapps.collections.AoCollections;
+import com.aoapps.lang.NullArgumentException;
 import com.semanticcms.core.controller.CapturePage;
 import com.semanticcms.core.controller.PageDags;
 import com.semanticcms.core.controller.PageRefResolver;

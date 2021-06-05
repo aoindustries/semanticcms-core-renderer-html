@@ -22,8 +22,8 @@
  */
 package com.semanticcms.core.renderer.html;
 
-import com.aoindustries.encoding.MediaType;
-import com.aoindustries.web.resources.servlet.RegistryEE;
+import com.aoapps.encoding.MediaType;
+import com.aoapps.web.resources.servlet.RegistryEE;
 import com.semanticcms.core.controller.SemanticCMS;
 import com.semanticcms.core.model.Link;
 import com.semanticcms.core.model.Page;

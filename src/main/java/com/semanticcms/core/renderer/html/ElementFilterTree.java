@@ -22,10 +22,10 @@
  */
 package com.semanticcms.core.renderer.html;
 
-import com.aoindustries.html.any.AnyLI_c;
-import com.aoindustries.html.any.AnyPalpableContent;
-import com.aoindustries.html.any.AnyUL_c;
-import com.aoindustries.net.URIEncoder;
+import com.aoapps.html.any.AnyLI_c;
+import com.aoapps.html.any.AnyPalpableContent;
+import com.aoapps.html.any.AnyUL_c;
+import com.aoapps.net.URIEncoder;
 import com.semanticcms.core.controller.CapturePage;
 import com.semanticcms.core.controller.SemanticCMS;
 import com.semanticcms.core.model.ChildRef;

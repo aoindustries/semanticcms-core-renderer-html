@@ -22,9 +22,9 @@
  */
 package com.semanticcms.core.renderer.html;
 
-import com.aoindustries.html.servlet.DocumentEE;
-import com.aoindustries.net.DomainName;
-import com.aoindustries.net.Path;
+import com.aoapps.html.servlet.DocumentEE;
+import com.aoapps.net.DomainName;
+import com.aoapps.net.Path;
 import com.semanticcms.core.model.Page;
 import com.semanticcms.core.pages.local.PageContext;
 import java.io.IOException;

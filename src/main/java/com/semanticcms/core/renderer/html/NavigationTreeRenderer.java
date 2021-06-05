@@ -22,20 +22,20 @@
  */
 package com.semanticcms.core.renderer.html;
 
-import com.aoindustries.html.any.AnyA;
-import com.aoindustries.html.any.AnyLI;
-import com.aoindustries.html.any.AnyLI_c;
-import com.aoindustries.html.any.AnyPalpableContent;
-import com.aoindustries.html.any.AnyUL_c;
-import com.aoindustries.html.any.AnyUnion_Palpable_Phrasing;
-import com.aoindustries.lang.Strings;
-import static com.aoindustries.lang.Strings.nullIfEmpty;
-import com.aoindustries.net.DomainName;
-import com.aoindustries.net.Path;
-import com.aoindustries.net.URIDecoder;
-import com.aoindustries.net.URIEncoder;
-import static com.aoindustries.taglib.AttributeUtils.resolveValue;
-import com.aoindustries.validation.ValidationException;
+import com.aoapps.html.any.AnyA;
+import com.aoapps.html.any.AnyLI;
+import com.aoapps.html.any.AnyLI_c;
+import com.aoapps.html.any.AnyPalpableContent;
+import com.aoapps.html.any.AnyUL_c;
+import com.aoapps.html.any.AnyUnion_Palpable_Phrasing;
+import com.aoapps.lang.Strings;
+import static com.aoapps.lang.Strings.nullIfEmpty;
+import com.aoapps.lang.validation.ValidationException;
+import com.aoapps.net.DomainName;
+import com.aoapps.net.Path;
+import com.aoapps.net.URIDecoder;
+import com.aoapps.net.URIEncoder;
+import static com.aoapps.taglib.AttributeUtils.resolveValue;
 import com.semanticcms.core.controller.CapturePage;
 import com.semanticcms.core.controller.PageRefResolver;
 import com.semanticcms.core.controller.PageUtils;
