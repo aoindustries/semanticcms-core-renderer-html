@@ -33,6 +33,7 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 	<packaging>bundle</packaging>
 
 	<properties>
+		<module.name>com.semanticcms.core.renderer.html</module.name>
 		<javadoc.breadcrumbs><![CDATA[<a target="${javadoc.target}" href="https://semanticcms.com/">SemanticCMS</a>
 / <a target="${javadoc.target}" href="https://semanticcms.com/core/">Core</a>
 / <a target="${javadoc.target}" href="https://semanticcms.com/core/renderer/">Renderer</a>
@@ -83,14 +84,12 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId><artifactId>maven-javadoc-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId><artifactId>maven-dependency-plugin</artifactId>
 				<configuration>
-					<additionalDependencies>
-						<!-- Javadoc-only -->
-						<additionalDependency>
-							<groupId>com.aoapps</groupId><artifactId>ao-encoding-servlet</artifactId><version>4.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
-						</additionalDependency>
-					</additionalDependencies>
+					<usedDependencies>
+						<!-- Direct -->
+						<dependency>com.aoapps:ao-encoding-servlet</dependency><!-- Required for module-info.java -->
+					</usedDependencies>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -103,23 +102,11 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId><artifactId>maven-dependency-plugin</artifactId>
-						<dependencies>
-							<!-- Javadoc-only -->
-							<dependency>
-								<groupId>com.aoapps</groupId><artifactId>ao-encoding-servlet</artifactId><version>4.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
-							</dependency>
-						</dependencies>
 						<executions>
 							<execution>
 								<id>unpack.offlineLinks</id><phase>generate-sources</phase><goals><goal>unpack</goal></goals>
 								<configuration>
 									<artifactItems>
-										<!-- Javadoc-only -->
-										<artifactItem>
-											<groupId>com.aoapps</groupId><artifactId>ao-encoding-servlet</artifactId><version>4.0.0-SNAPSHOT</version><classifier>javadoc</classifier>
-											<includes>element-list, package-list</includes>
-											<outputDirectory>${project.build.directory}/offlineLinks/com.aoapps/ao-encoding-servlet</outputDirectory>
-										</artifactItem>
 										<!-- Direct -->
 										<artifactItem>
 											<groupId>com.aoapps</groupId><artifactId>ao-collections</artifactId><classifier>javadoc</classifier>
@@ -130,6 +117,11 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 											<groupId>com.aoapps</groupId><artifactId>ao-encoding</artifactId><classifier>javadoc</classifier>
 											<includes>element-list, package-list</includes>
 											<outputDirectory>${project.build.directory}/offlineLinks/com.aoapps/ao-encoding</outputDirectory>
+										</artifactItem>
+										<artifactItem>
+											<groupId>com.aoapps</groupId><artifactId>ao-encoding-servlet</artifactId><classifier>javadoc</classifier>
+											<includes>element-list, package-list</includes>
+											<outputDirectory>${project.build.directory}/offlineLinks/com.aoapps/ao-encoding-servlet</outputDirectory>
 										</artifactItem>
 										<artifactItem>
 											<groupId>com.aoapps</groupId><artifactId>ao-fluent-html-any</artifactId><classifier>javadoc</classifier>
@@ -218,11 +210,6 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 						<groupId>org.apache.maven.plugins</groupId><artifactId>maven-javadoc-plugin</artifactId>
 						<configuration>
 							<offlineLinks>
-								<!-- Javadoc-only -->
-								<offlineLink>
-									<url>https://oss.aoapps.com/encoding/servlet/apidocs/</url>
-									<location>${project.build.directory}/offlineLinks/com.aoapps/ao-encoding-servlet</location>
-								</offlineLink>
 								<!-- Direct -->
 								<offlineLink>
 									<url>https://oss.aoapps.com/collections/apidocs/</url>
@@ -231,6 +218,10 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 								<offlineLink>
 									<url>https://oss.aoapps.com/encoding/apidocs/</url>
 									<location>${project.build.directory}/offlineLinks/com.aoapps/ao-encoding</location>
+								</offlineLink>
+								<offlineLink>
+									<url>https://oss.aoapps.com/encoding/servlet/apidocs/</url>
+									<location>${project.build.directory}/offlineLinks/com.aoapps/ao-encoding-servlet</location>
 								</offlineLink>
 								<offlineLink>
 									<url>https://oss.aoapps.com/fluent-html/any/apidocs/</url>
@@ -311,6 +302,26 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.felix</groupId><artifactId>maven-bundle-plugin</artifactId>
+						<configuration>
+							<instructions>
+								<!--
+									Releases use "Automatic-Module-Name" instead of "module-info.java"
+									since has direct dependencies that are not yet modularized.
+								-->
+								<Automatic-Module-Name>${module.name}</Automatic-Module-Name>
+								<Private-Package>!.</Private-Package>
+							</instructions>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 
 	<dependencyManagement>
@@ -321,6 +332,9 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 			</dependency>
 			<dependency>
 				<groupId>com.aoapps</groupId><artifactId>ao-encoding</artifactId><version>5.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
+			</dependency>
+			<dependency>
+				<groupId>com.aoapps</groupId><artifactId>ao-encoding-servlet</artifactId><version>4.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
 			</dependency>
 			<dependency>
 				<groupId>com.aoapps</groupId><artifactId>ao-fluent-html-any</artifactId><version>0.5.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
@@ -375,9 +389,6 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 				<groupId>com.aoapps</groupId><artifactId>ao-concurrent</artifactId><version>4.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
 			</dependency>
 			<dependency>
-				<groupId>com.aoapps</groupId><artifactId>ao-encoding-servlet</artifactId><version>4.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
-			</dependency>
-			<dependency>
 				<groupId>com.aoapps</groupId><artifactId>ao-encoding-taglib</artifactId><version>2.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
 			</dependency>
 			<dependency>
@@ -426,6 +437,9 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 		</dependency>
 		<dependency>
 			<groupId>com.aoapps</groupId><artifactId>ao-encoding</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.aoapps</groupId><artifactId>ao-encoding-servlet</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.aoapps</groupId><artifactId>ao-fluent-html-any</artifactId>
