@@ -9,6 +9,7 @@
 [![license: LGPL v3](https://semanticcms.com/ao-badges/license-lgpl-3.0.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 
 [![Build](https://github.com/aoindustries/semanticcms-core-renderer-html/workflows/Build/badge.svg?branch=master)](https://github.com/aoindustries/semanticcms-core-renderer-html/actions?query=workflow%3ABuild)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.semanticcms/semanticcms-core-renderer-html/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.semanticcms/semanticcms-core-renderer-html)
 
 [SemanticCMS pages](https://github.com/aoindustries/semanticcms-core-pages) rendered as HTML in a Servlet environment.
 
