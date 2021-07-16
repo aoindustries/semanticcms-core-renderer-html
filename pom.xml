@@ -39,7 +39,7 @@ along with semanticcms-core-renderer-html.  If not, see <http://www.gnu.org/lice
 / <a target="${javadoc.target}" href="https://semanticcms.com/core/renderer/">Renderer</a>
 / <a target="${javadoc.target}" href="${project.url}">HTML</a>]]></javadoc.breadcrumbs>
 		<description.html><![CDATA[<a target="${javadoc.target}" href="https://semanticcms.com/core/pages/">SemanticCMS pages</a> rendered as HTML in a Servlet environment.]]></description.html>
-		<!-- SonarCloud.io -->
+		<!-- SonarQube -->
 		<sonar.projectKey>${project.groupId}:${project.artifactId}</sonar.projectKey>
 		<sonar.organization>aoindustries</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
